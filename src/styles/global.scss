@@ -1,0 +1,25 @@
+@use 'variables';
+@use 'reset';
+
+body {
+  font-family: variables.$font-primary;
+  font-size: variables.$font-size-base;
+  background-color: variables.$background-color;
+  color: variables.$text-color;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
