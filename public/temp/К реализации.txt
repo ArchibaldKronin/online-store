@@ -1,0 +1,41 @@
+1) Загружать фото только когда оно видно на странице
+2) Поиск по названию
+3) Поиск по категориям
+4) Иконку на вкладке
+5) иконку корзины
+6) менять количество products по нажатию кнопки купить
+7) для индикации загрузки в аутлет и не только использовать useNavigation (загрузка, переход итд)
+    navigation.state → "idle", "loading", "submitting"
+    navigation.location → объект Location, если идет переход
+    navigation.formMethod → метод отправки формы (POST, PUT, DELETE и т. д.)
+8) useLocation - данные о текущем url (можно принять стейт из useNavigate)
+    pathname → /products/123
+    search → ?q=apple
+    hash → #section
+    state → переданные данные (например, при navigate("/path", { state: data }))
+9) useNavigate для программной навигации (можно передать стейт для useLocation)
+(Используется в обработчике событий, когда пользователь что-то делает)
+    navigate("/path") → перейти на /path
+    navigate(-1) → вернуться назад
+    navigate("/profile", { replace: true }) → заменить текущий URL (без записи в history)
+    navigate("/product", { state: { id: 123 } }) → передать state в useLocation().state
+10) <Navigate> - компонент для навигации, аналог useNavigate (выполняется при рендере JSX)
+    <Navigate> выполняет переход сразу при рендере.
+    useNavigate() используется в обработчиках событий.
+11) URLSearchParams
+    {
+        const location = useLocation();
+        const params = new URLSearchParams(location.search);
+
+        console.log(params.get("q")); // "apple"
+        console.log(params.get("page")); // "2"
+    }
+    {
+        const navigate = useNavigate();
+
+    }
+12) useSearchParams позволяет получать query-параметры URL 
+13) 
+
+
+Есть файл "общие типы"

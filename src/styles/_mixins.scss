@@ -6,7 +6,7 @@
   justify-content: center;
 }
 
-@mixin button($bg-color) {
+@mixin button($bg-color: grey) {
   background-color: $bg-color;
   color: variables.$text-color;
   padding: 10px 20px;

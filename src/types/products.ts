@@ -7,5 +7,3 @@ export type Product = {
   stock: number;
   category: string;
 };
-
-export type Products = Product[];
