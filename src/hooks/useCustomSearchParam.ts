@@ -3,7 +3,6 @@ import { getQFromSession } from '../functions/session-storage-functions/searchQu
 
 export default function useCustomSearchParam(param: string) {
   const [searchParams, setSearchParams] = useSearchParams({ [param]: getQFromSession() });
-  console.log('Хук: ' + searchParams);
 
   const customSearchParamString = searchParams.get(param) || '';
 

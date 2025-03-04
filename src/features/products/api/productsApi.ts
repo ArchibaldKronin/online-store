@@ -1,16 +1,27 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getProducts } from './productsApiService';
+import { getProductById, getProducts } from './productsApiService';
 import { Product } from '../../../types';
 import generateErrorInRTK from '../../../functions/error-functions/generateErrorInRTK';
+import { BASE_URL_PRODUCTS } from '../../../constantst';
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://67b71c9e2bddacfb270db7b8.mockapi.io/products' }),
+  baseQuery: fetchBaseQuery({ baseUrl: BASE_URL_PRODUCTS }),
   endpoints: (builder) => ({
     getProducts: builder.query<Product[] | null, void | string>({
-      queryFn: async () => {
+      queryFn: async (query?: string) => {
         try {
-          const data = await getProducts();
+          const data = await getProducts(query);
+          return { data };
+        } catch (error: unknown) {
+          return generateErrorInRTK(error);
+        }
+      },
+    }),
+    getProductById: builder.query<Product | null, string>({
+      queryFn: async (id) => {
+        try {
+          const data = await getProductById(id);
           return { data };
         } catch (error: unknown) {
           return generateErrorInRTK(error);
@@ -20,7 +31,7 @@ export const productsApi = createApi({
   }),
 });
 
-export const { useGetProductsQuery } = productsApi;
+export const { useGetProductsQuery, useGetProductByIdQuery } = productsApi;
 
 // import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 // import { fetchProducts, fetchProductById, createProduct } from "./productsApiService";

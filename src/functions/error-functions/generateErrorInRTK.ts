@@ -2,23 +2,26 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 export default function generateErrorInRTK(error: unknown): { error: FetchBaseQueryError } {
   let errorMessage = 'Ошибка запроса';
-  let statusCode: string | number = 'UNKNOWN_ERROR';
+  let statusCode: number = 520;
+  let statusText = 'Неизвестная ошибка';
 
   if (error instanceof Error) {
+    statusText = error.name || 'Ошибка сети';
     errorMessage = error.message;
   }
 
-  if (typeof error === 'object' && error !== null && 'response' in error) {
-    const response = (error as { response?: { status?: number } }).response;
-    if (response?.status) {
-      statusCode = response.status;
-    }
+  if (typeof error === 'object' && error !== null && 'status' in error) {
+    statusCode = error.status as number;
+    statusText = (error as { statusText?: string }).statusText || 'Неизвестная ошибка';
   }
 
   return {
     error: {
       status: statusCode,
-      data: { message: errorMessage },
-    } as FetchBaseQueryError,
+      data: {
+        message: errorMessage,
+        statusText,
+      },
+    },
   };
 }

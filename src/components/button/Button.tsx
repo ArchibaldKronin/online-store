@@ -9,7 +9,10 @@ type ButtonProps = {
 
 const Button: FC<ButtonProps> = ({ children, onClick }) => {
   return (
-    <button onClick={onClick} className={classNames(styles.greenBg)}>
+    <button
+      onClick={onClick}
+      // className={classNames(styles.greenBg)}
+    >
       {children}
     </button>
   );

@@ -3,7 +3,7 @@ import styles from './SearchBar.module.scss';
 import React, { memo, useState } from 'react';
 import { getQFromSession } from '../../functions/session-storage-functions/searchQueryStorage';
 
-interface SearchFormProps {
+export interface SearchFormProps {
   onSearch: (query: string) => void;
 }
 

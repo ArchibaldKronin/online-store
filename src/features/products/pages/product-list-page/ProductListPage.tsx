@@ -9,12 +9,13 @@ import {
   saveQToSession,
 } from '../../../../functions/session-storage-functions/searchQueryStorage';
 import useCustomSearchParam from '../../../../hooks/useCustomSearchParam';
+import ProductListComponent from '../../../../components/product-list-component/ProductListComponent';
+import ProductListHeader from '../../../../components/productListHeader/ProductListHeader';
 
 const ProductListPage = () => {
-  const { data: products, error, isLoading } = useGetProductsQuery();
-
   const [qSearchParam, setQSearcheParam] = useCustomSearchParam('q'); // параметры поиска
-  console.log('Список покупок: ' + qSearchParam);
+
+  const { data: products, error, isLoading } = useGetProductsQuery(qSearchParam);
 
   //при каждом вызове setQSearcheParam обновлять хранилище
   const setQSearcheParamAndStore = (q: string) => {
@@ -43,17 +44,24 @@ const ProductListPage = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage />;
+    return <ErrorPage er={error} />;
   }
   return (
     <div>
-      <SearchBar onSearch={onClick} />
+      <ProductListHeader onSearch={onClick} />
+      {/* <SearchBar onSearch={onClick} /> */}
       <ul>
         {products &&
           products.map((product) => (
             <li key={product.id}>
-              <h3>{product.title}</h3>
-              <p>{product.description}</p>
+              <ProductListComponent
+                {...product}
+                // title={product.title}
+                // category={product.category}
+                // description={product.description}
+                // image={product.image}
+                // price={product.price}
+              />
             </li>
           ))}
       </ul>

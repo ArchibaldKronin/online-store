@@ -1,3 +1,5 @@
+@use "sass:color";
+
 @use 'variables';
 @use 'reset';
 @use 'mixins';
@@ -20,7 +22,15 @@ h6 {
 }
 
 button {
-  @include mixins.button;
+  background-color: variables.$primary-color;
+  color: variables.$text-color;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: color.adjust(variables.$primary-color, $lightness: -10%, $space: hsl);
+  }
 }
 
 .container {

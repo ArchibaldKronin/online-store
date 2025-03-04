@@ -8,3 +8,5 @@ createRoot(document.getElementById('root')!).render(
     <AppRouterProvider />
   </StrictMode>,
 );
+
+// createRoot(document.getElementById('root')!).render(<AppRouterProvider />);
