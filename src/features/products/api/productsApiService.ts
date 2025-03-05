@@ -20,8 +20,6 @@ export const getProducts = async (query?: string): Promise<Product[] | null> => 
     products = matchSorter(products, query, { keys: ['title', 'category'] });
   }
 
-  console.log(products);
-  console.log('Сортированные', products);
   return products;
 };
 

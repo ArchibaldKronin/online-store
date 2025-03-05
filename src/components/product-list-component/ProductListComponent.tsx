@@ -27,13 +27,28 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   };
 
   const navigate = useNavigate();
-  const productCardClickHandler = (productId: string) => navigate(`/products/${productId}`);
+  const [isSelecting, setIsSelecting] = useState(false);
+
+  const handleMouseDown = () => {
+    setIsSelecting(false);
+  };
+  const handleMouseMove = () => {
+    setIsSelecting(true);
+  };
+  const handleMouseUp = () => {
+    if (!isSelecting) {
+      navigate(`/products/${id}`);
+    }
+  };
 
   return (
     <div
       className={classNames(styles.productElementContainer)}
-      onClick={() => productCardClickHandler(id.toString())}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
     >
+      {/* <NavLink to={`${id}`}> */}
       <div className={classNames(styles.imgContainer)}>
         <img src={image} alt={`Image of the ${title}`} />
         {/* Маленький размер. Для мобильных экранов еще меньше */}
@@ -47,6 +62,8 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
         <div className={classNames(styles.price)}>{price} у.е.</div>
         {/* выдели жирным */}
       </div>
+      {/* </NavLink> */}
+
       <div className="manualsContainer" onClick={(e) => e.stopPropagation()}>
         {quantityInCart > 0 ? (
           <СhangeQuantityItem onClickMinus={handlDecrQuantity} onClickPlus={handlIncrQuantity}>

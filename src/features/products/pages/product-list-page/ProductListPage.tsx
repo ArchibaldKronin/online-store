@@ -1,16 +1,21 @@
 import { useCallback, useEffect } from 'react';
 import ErrorPage from '../../../../components/error-page/ErrorPage';
 import Loader from '../../../../components/loader/Loader';
-import SearchBar from '../../../../components/search-bar/SearchBar';
 import { useGetProductsQuery } from '../../api/productsApi';
 import {
-  clearQFromSession,
-  getQFromSession,
-  saveQToSession,
-} from '../../../../functions/session-storage-functions/searchQueryStorage';
+  clearQParamsinSession,
+  getQParamsFromSession,
+  saveQParamsToSession,
+} from '../../../../functions/session-storage-functions/searchQueryParamsInStorage';
 import useCustomSearchParam from '../../../../hooks/useCustomSearchParam';
 import ProductListComponent from '../../../../components/product-list-component/ProductListComponent';
 import ProductListHeader from '../../../../components/productListHeader/ProductListHeader';
+import { SortSelectStates } from '../../../../components/selectComponent/SelectSortComponent';
+import {
+  clearSortParamsinSession,
+  getSortParamsFromSession,
+  saveSortParamsToSession,
+} from '../../../../functions/session-storage-functions/sortingPriceQueryParamsInStorage';
 
 const ProductListPage = () => {
   const [qSearchParam, setQSearcheParam] = useCustomSearchParam('q'); // параметры поиска
@@ -20,26 +25,47 @@ const ProductListPage = () => {
   //при каждом вызове setQSearcheParam обновлять хранилище
   const setQSearcheParamAndStore = (q: string) => {
     if (q === '') {
-      clearQFromSession();
+      clearQParamsinSession();
       setQSearcheParam(q);
     } else {
       setQSearcheParam(q);
-      saveQToSession(q);
+      saveQParamsToSession(q);
     }
   };
 
   //каждый раз при монтировании, проверять хранилище
   useEffect(() => {
-    const queryFromSession = getQFromSession();
+    const queryFromSession = getQParamsFromSession();
     setQSearcheParam(queryFromSession);
   }, []);
 
   //пропсы
-  const onClick = useCallback(
+  const handleSearch = useCallback(
     (q: string) => setQSearcheParamAndStore(q),
     [setQSearcheParamAndStore],
   );
   //
+
+  //СОРТИРОВКА
+  const [sortSearchParam, setSortSearcheParam] = useCustomSearchParam('sort');
+
+  const setSortSearchParamAndStore = (q: SortSelectStates) => {
+    if (q === '') {
+      clearSortParamsinSession();
+      setSortSearcheParam(q);
+    } else {
+      setSortSearcheParam(q);
+      saveSortParamsToSession(q);
+    }
+  };
+
+  useEffect(() => {
+    const queryFromSession = getSortParamsFromSession();
+    console.log('Данные из хранилища по ключу Sort', queryFromSession);
+
+    setSortSearcheParam(queryFromSession);
+  }, []);
+  ////////////////
   if (isLoading) {
     return <Loader />;
   }
@@ -48,8 +74,9 @@ const ProductListPage = () => {
   }
   return (
     <div>
-      <ProductListHeader onSearch={onClick} />
+      <ProductListHeader onSearch={handleSearch} onChangeSelect={setSortSearchParamAndStore} />
       {/* <SearchBar onSearch={onClick} /> */}
+      {sortSearchParam}
       <ul>
         {products &&
           products.map((product) => (

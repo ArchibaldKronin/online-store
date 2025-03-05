@@ -1,4 +1,4 @@
 import { configureSessionStorageToStrings } from './queryStorageFunctions';
 
-export const [saveQToSession, getQFromSession, clearQFromSession] =
+export const [saveQParamsToSession, getQParamsFromSession, clearQParamsinSession] =
   configureSessionStorageToStrings('q');
