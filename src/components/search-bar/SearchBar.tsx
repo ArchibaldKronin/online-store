@@ -1,15 +1,16 @@
 import classNames from 'classnames';
 import styles from './SearchBar.module.scss';
 import React, { memo, useState } from 'react';
-import { getQParamsFromSession } from '../../functions/session-storage-functions/searchQueryParamsInStorage';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
+import { getStringFromSession } from '../../functions/session-storage-functions/queryStorageFunctions';
 
 export interface SearchFormProps {
   onSearch: (query: string) => void;
 }
 
 const SearchBar = memo(({ onSearch }: SearchFormProps) => {
-  const [query, setQuery] = useState(getQParamsFromSession());
+  // const [query, setQuery] = useState(getQParamsFromSession());
+  const [query, setQuery] = useState(getStringFromSession('q'));
   const debouncedOnSearch = useDebounceCallback(onSearch, 500);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

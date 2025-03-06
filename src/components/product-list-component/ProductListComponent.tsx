@@ -42,28 +42,27 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   };
 
   return (
-    <div
-      className={classNames(styles.productElementContainer)}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      {/* <NavLink to={`${id}`}> */}
-      <div className={classNames(styles.imgContainer)}>
-        <img src={image} alt={`Image of the ${title}`} />
-        {/* Маленький размер. Для мобильных экранов еще меньше */}
+    <div className={classNames(styles.productComponentContainer)}>
+      <div
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        className={classNames(styles.productMainInfoContainer)}
+      >
+        <div className={classNames(styles.imgContainer)}>
+          <img src={image} alt={`Image of the ${title}`} />
+          {/* Маленький размер. Для мобильных экранов еще меньше */}
+        </div>
+        <div className={classNames(styles.mainInfoContainer)}>
+          <h3>{title}</h3>
+          <p className={classNames(styles.category)}>Категория: {category}</p>
+          {/* выдели жирным */}
+          <p className={classNames(styles.description)}>{description}</p>
+          {/* описание пусть обрывается с многоточием */}
+          <div className={classNames(styles.price)}>{price} у.е.</div>
+          {/* выдели жирным */}
+        </div>
       </div>
-      <div className={classNames(styles.mainInfoContainer)}>
-        <h3>{title}</h3>
-        <p className={classNames(styles.category)}>Категория: {category}</p>
-        {/* выдели жирным */}
-        <p className={classNames(styles.description)}>{description}</p>
-        {/* описание пусть обрывается с многоточием */}
-        <div className={classNames(styles.price)}>{price} у.е.</div>
-        {/* выдели жирным */}
-      </div>
-      {/* </NavLink> */}
-
       <div className="manualsContainer" onClick={(e) => e.stopPropagation()}>
         {quantityInCart > 0 ? (
           <СhangeQuantityItem onClickMinus={handlDecrQuantity} onClickPlus={handlIncrQuantity}>

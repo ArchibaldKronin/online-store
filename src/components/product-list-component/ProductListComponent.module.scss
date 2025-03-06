@@ -1,9 +1,12 @@
 @use '../../styles/mixins';
 
-.productElementContainer {
+.productComponentContainer {
   display: flex;
 
   height: 200px;
+}
+.productMainInfoContainer {
+  display: flex;
 }
 
 .imgContainer {

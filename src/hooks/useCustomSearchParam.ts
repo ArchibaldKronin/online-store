@@ -1,31 +1,41 @@
 import { useSearchParams } from 'react-router-dom';
-import { getQParamsFromSession } from '../functions/session-storage-functions/searchQueryParamsInStorage';
 
-export default function useCustomSearchParam(param: string) {
+export default function useCustomSearchParam(params: string[]) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  console.log('Имя парамса в хуке', param);
+  console.log('Имя парамсов в хуке', params);
 
-  const customSearchParamString = searchParams.get(param) || '';
+  const searchParamsObj = params.map((param) => {
+    return { [param]: searchParams.get(param) || '' };
+  });
 
-  console.log('Значение парама хуке ', param, customSearchParamString);
+  //loging
+  console.log(`Парамсы возвращаемые из хука`, searchParamsObj);
+  //end loging
 
-  const setCustomSearcheParam = (q: string) => {
-    console.log('Установка парамса в хуке ', param, ' ', q);
+  const setCustomSearcheParam = (paramsObjArr: typeof searchParamsObj) => {
+    //loging
+    console.log(`Парамсы для записи в хуке`, paramsObjArr);
+    //end loging
 
     setSearchParams(
       (prev) => {
         const newParams = new URLSearchParams(prev);
-        if (q === '') {
-          newParams.delete(param);
-        } else {
-          newParams.set(param, q);
+
+        for (let paramsObj of paramsObjArr) {
+          const key = Object.keys(paramsObj)[0];
+          if (paramsObj[key] === '') {
+            newParams.delete(key);
+          } else {
+            newParams.set(key, paramsObj[key]);
+          }
         }
+
         return newParams;
       },
       { replace: true },
     );
   };
 
-  return [customSearchParamString, setCustomSearcheParam] as const;
+  return [searchParamsObj, setCustomSearcheParam, params] as const;
 }

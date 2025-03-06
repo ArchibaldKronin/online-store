@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { getSortParamsFromSession } from '../../functions/session-storage-functions/sortingPriceQueryParamsInStorage';
+import { getStringFromSession } from '../../functions/session-storage-functions/queryStorageFunctions';
 
 export interface SelectComponentProps {
   onChangeSelect: (q: SortSelectStates) => void;
@@ -9,7 +9,7 @@ export type SortSelectStates = 'asc' | 'desc' | '';
 
 const SelectSortComponent: FC<SelectComponentProps> = ({ onChangeSelect }) => {
   const [sortOrder, setSortOrder] = useState<SortSelectStates>(
-    getSortParamsFromSession() as SortSelectStates,
+    getStringFromSession('sort') as SortSelectStates,
   );
 
   const handleSortSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

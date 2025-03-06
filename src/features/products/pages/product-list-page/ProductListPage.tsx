@@ -1,71 +1,87 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import ErrorPage from '../../../../components/error-page/ErrorPage';
 import Loader from '../../../../components/loader/Loader';
 import { useGetProductsQuery } from '../../api/productsApi';
-import {
-  clearQParamsinSession,
-  getQParamsFromSession,
-  saveQParamsToSession,
-} from '../../../../functions/session-storage-functions/searchQueryParamsInStorage';
+
 import useCustomSearchParam from '../../../../hooks/useCustomSearchParam';
 import ProductListComponent from '../../../../components/product-list-component/ProductListComponent';
 import ProductListHeader from '../../../../components/productListHeader/ProductListHeader';
 import { SortSelectStates } from '../../../../components/selectComponent/SelectSortComponent';
 import {
-  clearSortParamsinSession,
-  getSortParamsFromSession,
-  saveSortParamsToSession,
-} from '../../../../functions/session-storage-functions/sortingPriceQueryParamsInStorage';
+  clearStringInSession,
+  saveStringToSession,
+} from '../../../../functions/session-storage-functions/queryStorageFunctions';
+import useGetParamsFromStoreEffect from '../../../../hooks/useGetParamsFromStoreEffect';
 
 const ProductListPage = () => {
-  const [qSearchParam, setQSearcheParam] = useCustomSearchParam('q'); // параметры поиска
+  const [memorableSearchParams, setMemorableSearchParams, initialParams] = useCustomSearchParam([
+    'q',
+    'sort',
+  ]);
 
+  //получение параметра поиска для запроса каталога
+  const qSearchParamObj = memorableSearchParams.find((param) => 'q' in param);
+  let qSearchParam: string = '';
+  if (qSearchParamObj) {
+    qSearchParam = qSearchParamObj['q'] || '';
+  } else {
+    qSearchParam = '';
+  }
   const { data: products, error, isLoading } = useGetProductsQuery(qSearchParam);
 
   //при каждом вызове setQSearcheParam обновлять хранилище
-  const setQSearcheParamAndStore = (q: string) => {
-    if (q === '') {
-      clearQParamsinSession();
-      setQSearcheParam(q);
-    } else {
-      setQSearcheParam(q);
-      saveQParamsToSession(q);
+  const setSearchParamsAndStor = (paramsObjArr: { [x: string]: string }[]) => {
+    for (let paramsObj of paramsObjArr) {
+      const key = Object.keys(paramsObj)[0];
+      if (paramsObj[key] === '') {
+        clearStringInSession(key);
+      } else {
+        saveStringToSession(key, paramsObj[key]);
+      }
     }
+    setMemorableSearchParams(paramsObjArr);
   };
 
   //каждый раз при монтировании, проверять хранилище
-  useEffect(() => {
-    const queryFromSession = getQParamsFromSession();
-    setQSearcheParam(queryFromSession);
-  }, []);
+  useGetParamsFromStoreEffect(['q', 'sort'], setMemorableSearchParams);
 
   //пропсы
   const handleSearch = useCallback(
-    (q: string) => setQSearcheParamAndStore(q),
-    [setQSearcheParamAndStore],
+    (query: string) => {
+      const newParams = memorableSearchParams.map((obj) => {
+        if (obj.hasOwnProperty('q')) {
+          return { q: query };
+        } else {
+          return { ...obj };
+        }
+      });
+
+      setSearchParamsAndStor(newParams);
+    },
+    [setSearchParamsAndStor],
   );
-  //
 
-  //СОРТИРОВКА
-  const [sortSearchParam, setSortSearcheParam] = useCustomSearchParam('sort');
-
-  const setSortSearchParamAndStore = (q: SortSelectStates) => {
-    if (q === '') {
-      clearSortParamsinSession();
-      setSortSearcheParam(q);
-    } else {
-      setSortSearcheParam(q);
-      saveSortParamsToSession(q);
-    }
+  const handleChangeSelect = (query: SortSelectStates) => {
+    const newParams = memorableSearchParams.map((obj) => {
+      if (obj.hasOwnProperty('sort')) {
+        return { sort: query };
+      } else {
+        return { ...obj };
+      }
+    });
+    setSearchParamsAndStor(newParams);
   };
 
-  useEffect(() => {
-    const queryFromSession = getSortParamsFromSession();
-    console.log('Данные из хранилища по ключу Sort', queryFromSession);
+  //////////////// cheking
+  const curentSortingObj = memorableSearchParams.find((param) => 'sort' in param);
+  let curentSorting: string = '';
+  if (curentSortingObj) {
+    curentSorting = curentSortingObj['sort'] || '';
+  } else {
+    curentSorting = '';
+  }
+  ////////////end of cheking
 
-    setSortSearcheParam(queryFromSession);
-  }, []);
-  ////////////////
   if (isLoading) {
     return <Loader />;
   }
@@ -74,21 +90,13 @@ const ProductListPage = () => {
   }
   return (
     <div>
-      <ProductListHeader onSearch={handleSearch} onChangeSelect={setSortSearchParamAndStore} />
-      {/* <SearchBar onSearch={onClick} /> */}
-      {sortSearchParam}
+      <ProductListHeader onSearch={handleSearch} onChangeSelect={handleChangeSelect} />
+      Текущая сортировка: {curentSorting}
       <ul>
         {products &&
           products.map((product) => (
             <li key={product.id}>
-              <ProductListComponent
-                {...product}
-                // title={product.title}
-                // category={product.category}
-                // description={product.description}
-                // image={product.image}
-                // price={product.price}
-              />
+              <ProductListComponent {...product} />
             </li>
           ))}
       </ul>
