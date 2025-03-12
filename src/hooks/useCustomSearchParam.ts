@@ -1,7 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 export default function useCustomSearchParam(params: string[]) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams({ page: '1' });
 
   console.log('Имя парамсов в хуке', params);
 

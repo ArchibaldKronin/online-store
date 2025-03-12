@@ -4,8 +4,17 @@ import styles from './ProductListComponent.module.scss';
 import classNames from 'classnames';
 import Button from '../button/Button';
 import { useNavigate } from 'react-router-dom';
+import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
+import {
+  useChangeCartElementQuantityMutation,
+  useCreateElementInCartMutation,
+} from '../../features/cart/api/cartApi';
 
-type ProductListComponentProps = Product & { children?: ReactNode };
+type ProductListComponentProps = Product & {
+  children?: ReactNode;
+  isInTheCart: boolean;
+  quantityInCart: number;
+};
 
 const ProductListComponent: FC<ProductListComponentProps> = ({
   id,
@@ -15,15 +24,48 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   category,
   description,
   stock,
+  isInTheCart = false,
+  quantityInCart = 0,
 }) => {
-  const [quantityInCart, setQuantityInCart] = useState(0); //исправить естественно получая данные с сервера о товарах в корзине
+  const [quantityInCartState, setQuantityInCartState] = useState(quantityInCart); //исправить естественно получая данные с сервера о товарах в корзине
+
+  const [
+    createElementInCart,
+    {
+      data: elementInCart,
+      isLoading: isLoadingCreatingElementInCart,
+      error: errorCreateElementInCart,
+    },
+  ] = useCreateElementInCartMutation();
+
+  async function AddToCart(id: string) {
+    createElementInCart(id);
+    setQuantityInCartState(1); // ИСПРАВИТЬ ЕСТЕСТВЕННО
+  }
+
+  const [
+    changeQuantityInCart,
+    {
+      data: changedElementInCart,
+      isLoading: isLoadingChangeQuantityInCart,
+      error: errorChangeQuantityInCart,
+    },
+  ] = useChangeCartElementQuantityMutation();
 
   const handlIncrQuantity = () => {
-    setQuantityInCart((prev) => ++prev);
+    if (!elementInCart) return;
+    // НЕЛЬЗЯ ДОБАВИТЬ БОЛЬШЕ СТОКА
+    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCartState + 1 });
+    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
+    setQuantityInCartState((prev) => ++prev);
   };
 
   const handlDecrQuantity = () => {
-    setQuantityInCart((prev) => --prev);
+    if (!elementInCart) return;
+    // ПРИ СНИЖЕНИИ ДО НУЛЯ МЕНЯТЬ КНОПКИ
+    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCartState - 1 });
+    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
+    setQuantityInCartState((prev) => --prev);
   };
 
   const navigate = useNavigate();
@@ -62,14 +104,21 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
           <div className={classNames(styles.price)}>{price} у.е.</div>
           {/* выдели жирным */}
         </div>
+        <h3>{isInTheCart ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3>
       </div>
       <div className="manualsContainer" onClick={(e) => e.stopPropagation()}>
-        {quantityInCart > 0 ? (
-          <СhangeQuantityItem onClickMinus={handlDecrQuantity} onClickPlus={handlIncrQuantity}>
-            {0}
+        {quantityInCartState > 0 ? (
+          <СhangeQuantityItem
+            onClickMinus={handlDecrQuantity}
+            onClickPlus={handlIncrQuantity}
+            isLoading={isLoadingChangeQuantityInCart || isLoadingCreatingElementInCart}
+          >
+            {quantityInCartState}
           </СhangeQuantityItem>
         ) : (
-          <Button onClick={() => {}}>Добавить в корзину</Button>
+          <Button onClick={() => AddToCart(String(id))} isActive={!isLoadingCreatingElementInCart}>
+            Добавить в корзину
+          </Button>
         )}
       </div>
     </div>
@@ -77,27 +126,3 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
 };
 
 export default ProductListComponent;
-
-const СhangeQuantityItem: FC<{
-  children: number;
-  onClickPlus: () => void;
-  onClickMinus: () => void;
-}> = ({ children, onClickPlus, onClickMinus }) => {
-  return (
-    <>
-      <Button onClick={onClickMinus}>-</Button>
-      {children}
-      <Button onClick={onClickPlus}>+</Button>
-    </>
-  );
-};
-
-// .cover-img {
-//   width: 300px;
-//   height: 200px;
-//   object-fit: cover; // Обрежет изображение, чтобы заполнить контейнер
-//   border-radius: 5px;
-// }
-// 🔹 object-fit: contain; – вписывает изображение внутрь контейнера, сохраняя пропорции.
-// 🔹 object-fit: cover; – обрезает части изображения, чтобы заполнить контейнер.
-// 🔹 object-fit: fill; – растягивает изображение, может исказить пропорции.

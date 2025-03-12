@@ -1,25 +1,27 @@
+import { SortSelectStates } from '../../../components/selectComponent/SelectSortComponent';
 import { BASE_URL_PRODUCTS } from '../../../constantst';
 import { Product } from '../../../types';
 import { matchSorter } from 'match-sorter';
 
-export const getProducts = async (query?: string): Promise<Product[] | null> => {
-  // const response = await fetch(`${BASE_URL_PRODUCTS}`);
-  // if (!response.ok) {
-  //   throw {
-  //     status: response.status,
-  //     statusText: response.statusText,
-  //   };
-  // }
-  // const products: Product[] = await response.json();
-  // return products;
-
-  const response = await fetch('/temp/data.json');
-  let products: Product[] = await response.json();
-
-  if (query) {
-    products = matchSorter(products, query, { keys: ['title', 'category'] });
+export const getProducts = async (
+  page: string,
+  query?: string,
+  sort?: SortSelectStates,
+): Promise<Product[] | null> => {
+  const url = new URL(`${BASE_URL_PRODUCTS}`);
+  if (!query && !sort) {
+    url.searchParams.append('page', page);
+    url.searchParams.append('limit', '10');
   }
 
+  const response = await fetch(`${url}`);
+  if (!response.ok) {
+    throw {
+      status: response.status,
+      statusText: response.statusText,
+    };
+  }
+  const products: Product[] = await response.json();
   return products;
 };
 
@@ -34,26 +36,22 @@ export const getProductById = async (id: string) => {
   return product;
 };
 
-// const BASE_URL = "https://myapi.com/products";
-
-// export const fetchProducts = async () => {
-//   const response = await fetch(`${BASE_URL}`);
-//   if (!response.ok) throw new Error("Failed to fetch products");
-//   return response.json();
-// };
-
-// export const fetchProductById = async (id: string) => {
-//   const response = await fetch(`${BASE_URL}/${id}`);
-//   if (!response.ok) throw new Error("Product not found");
-//   return response.json();
-// };
-
-// export const createProduct = async (product: any) => {
-//   const response = await fetch(`${BASE_URL}`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(product),
-//   });
-//   if (!response.ok) throw new Error("Failed to create product");
-//   return response.json();
-// };
+export const changeProductStock = async (arg: {
+  id: string;
+  stock: number;
+  countInCart: number;
+}) => {
+  const newStock = arg.stock - arg.countInCart;
+  const response = await fetch(`${BASE_URL_PRODUCTS}/${arg.id}`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ stock: newStock }),
+  });
+  if (!response.ok)
+    throw {
+      status: response.status,
+      statusText: response.statusText,
+    };
+  const product: Product = await response.json();
+  return product;
+};

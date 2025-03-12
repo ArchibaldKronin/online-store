@@ -1,0 +1,94 @@
+@use '../../styles/mixins';
+
+.productComponentContainer {
+  display: flex;
+
+  height: 200px;
+}
+.productMainInfoContainer {
+  display: flex;
+}
+
+.imgContainer {
+  width: 200px;
+  height: 200px;
+}
+
+@media (max-width: 600px) {
+  .imgContainer {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .imgContainer {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+.imgContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.smallProductImage {
+}
+
+.category {
+  @include mixins.bold;
+}
+
+.description {
+  @include mixins.text-ellipsis(2);
+}
+
+.price {
+  @include mixins.bold;
+}
+
+.redBg {
+  background-color: red;
+}
+
+.greenBg {
+  background-color: green;
+}
+
+.yellowdBg {
+  background-color: yellow;
+}
+
+.blueBg {
+  background-color: blue;
+}
+
+.orangeBg {
+  background-color: orange;
+}
+
+.purpleBg {
+  background-color: purple;
+}
+
+.pinkBg {
+  background-color: pink;
+}
+
+.cyanBg {
+  background-color: cyan;
+}
+
+.brownBg {
+  background-color: brown;
+}
+
+.grayBg {
+  background-color: gray;
+}
+
+.limeBg {
+  background-color: lime;
+}

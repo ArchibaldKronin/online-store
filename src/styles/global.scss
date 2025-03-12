@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 @use 'variables';
 @use 'reset';
@@ -30,6 +30,12 @@ button {
 
   &:hover {
     background-color: color.adjust(variables.$primary-color, $lightness: -10%, $space: hsl);
+  }
+
+  &:disabled {
+    background: gray;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 }
 

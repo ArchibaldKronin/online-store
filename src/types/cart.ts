@@ -1,7 +1,7 @@
-export type CartItem = {
+export type CartElement = {
   id: number;
   productId: number;
   quantity: number;
 };
 
-export type Cart = CartItem[];
+export type Cart = CartElement[];
