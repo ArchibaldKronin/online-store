@@ -6,14 +6,23 @@ const СhangeQuantityItem: FC<{
   onClickPlus: () => void;
   onClickMinus: () => void;
   isLoading: boolean;
-}> = ({ children, onClickPlus, onClickMinus, isLoading }) => {
+  disablePlusBtn?: boolean;
+  disableMinusBtn?: boolean;
+}> = ({
+  children,
+  onClickPlus,
+  onClickMinus,
+  isLoading = false,
+  disablePlusBtn = false,
+  disableMinusBtn = false,
+}) => {
   return (
     <>
-      <Button onClick={onClickMinus} isActive={!isLoading}>
+      <Button onClick={onClickMinus} disabled={isLoading || disableMinusBtn}>
         -
       </Button>
       {children}
-      <Button onClick={onClickPlus} isActive={!isLoading}>
+      <Button onClick={onClickPlus} disabled={isLoading || disablePlusBtn}>
         +
       </Button>
     </>

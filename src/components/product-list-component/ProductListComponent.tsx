@@ -1,19 +1,21 @@
-import { FC, ReactNode, useState } from 'react';
-import { Product } from '../../types';
+import { FC, ReactNode, useEffect, useState } from 'react';
+import { CartElement, Product } from '../../types';
 import styles from './ProductListComponent.module.scss';
 import classNames from 'classnames';
 import Button from '../button/Button';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
 import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
 import {
   useChangeCartElementQuantityMutation,
   useCreateElementInCartMutation,
+  useDeleteCartElementMutation,
+  useGetCartElementByProductIdQuery,
+  useLazyGetCartElementByProductIdQuery,
 } from '../../features/cart/api/cartApi';
+import useDebounceCallback from '../../hooks/useDebounceCallback';
 
 type ProductListComponentProps = Product & {
   children?: ReactNode;
-  isInTheCart: boolean;
-  quantityInCart: number;
 };
 
 const ProductListComponent: FC<ProductListComponentProps> = ({
@@ -24,23 +26,50 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   category,
   description,
   stock,
-  isInTheCart = false,
-  quantityInCart = 0,
 }) => {
-  const [quantityInCartState, setQuantityInCartState] = useState(quantityInCart); //исправить естественно получая данные с сервера о товарах в корзине
+  const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
+    useGetCartElementByProductIdQuery(String(id), { refetchOnMountOrArgChange: true });
+
+  const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
 
   const [
     createElementInCart,
     {
-      data: elementInCart,
+      data: newElementInCart,
       isLoading: isLoadingCreatingElementInCart,
       error: errorCreateElementInCart,
     },
   ] = useCreateElementInCartMutation();
 
+  const [deleteElementInCart] = useDeleteCartElementMutation();
+
+  const quantityInCart: number = elementInCart ? elementInCart.quantity : 0;
+  const [quantityInCartState, setQuantityInCartState] = useState<number>(quantityInCart);
+
+  const [isOverStockState, setIsOverStockState] = useState(false);
+
+  useEffect(() => {
+    if (quantityInCartState < stock) {
+      setIsOverStockState(false);
+    } else {
+      setIsOverStockState(true);
+    }
+  }, [quantityInCartState, setIsOverStockState]);
+
+  useEffect(() => {
+    if (elementInCart) {
+      setQuantityInCartState(elementInCart.quantity);
+    } else {
+      setQuantityInCartState(0);
+    }
+  }, [elementInCart, setQuantityInCartState]);
+
   async function AddToCart(id: string) {
-    createElementInCart(id);
-    setQuantityInCartState(1); // ИСПРАВИТЬ ЕСТЕСТВЕННО
+    const result = await createElementInCart(id);
+    if ('data' in result && result.data) {
+      triggerGetElementInCart(id);
+    }
+    setQuantityInCartState(1);
   }
 
   const [
@@ -52,20 +81,40 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
     },
   ] = useChangeCartElementQuantityMutation();
 
+  const debounceChangeQuantityInCart = useDebounceCallback(
+    async (args: { id: string; count: number }) => {
+      const result = await changeQuantityInCart(args);
+
+      if ('data' in result && result.data) {
+        triggerGetElementInCart(String(result.data.productId));
+      }
+    },
+    500,
+  );
+
   const handlIncrQuantity = () => {
-    if (!elementInCart) return;
-    // НЕЛЬЗЯ ДОБАВИТЬ БОЛЬШЕ СТОКА
-    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCartState + 1 });
-    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
-    setQuantityInCartState((prev) => ++prev);
+    if (elementInCart) {
+      setQuantityInCartState((prev) => {
+        const newQuantity = prev + 1;
+        debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
+        return newQuantity;
+      });
+    }
   };
 
   const handlDecrQuantity = () => {
-    if (!elementInCart) return;
-    // ПРИ СНИЖЕНИИ ДО НУЛЯ МЕНЯТЬ КНОПКИ
-    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCartState - 1 });
-    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
-    setQuantityInCartState((prev) => --prev);
+    if (elementInCart) {
+      setQuantityInCartState((prev) => {
+        const newQuantity = prev > 1 ? prev - 1 : 0;
+        if (newQuantity < 1) {
+          deleteElementInCart(String(elementInCart.id));
+          return 0;
+        } else {
+          debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
+          return newQuantity;
+        }
+      });
+    }
   };
 
   const navigate = useNavigate();
@@ -104,7 +153,8 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
           <div className={classNames(styles.price)}>{price} у.е.</div>
           {/* выдели жирным */}
         </div>
-        <h3>{isInTheCart ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3>
+        {/* <h3>{elementInCartState ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3> */}
+        <h3>{elementInCart ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3>
       </div>
       <div className="manualsContainer" onClick={(e) => e.stopPropagation()}>
         {quantityInCartState > 0 ? (
@@ -112,11 +162,13 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
             onClickMinus={handlDecrQuantity}
             onClickPlus={handlIncrQuantity}
             isLoading={isLoadingChangeQuantityInCart || isLoadingCreatingElementInCart}
+            disablePlusBtn={isOverStockState}
+            disableMinusBtn={quantityInCartState < 1}
           >
             {quantityInCartState}
           </СhangeQuantityItem>
         ) : (
-          <Button onClick={() => AddToCart(String(id))} isActive={!isLoadingCreatingElementInCart}>
+          <Button onClick={() => AddToCart(String(id))} disabled={isLoadingCreatingElementInCart}>
             Добавить в корзину
           </Button>
         )}

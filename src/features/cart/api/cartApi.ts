@@ -6,7 +6,7 @@ import {
   createElementInCart,
   deleteCartElement,
   getCart,
-  getCartElementById,
+  getCartElementByProductId,
 } from './cartApiService';
 import generateErrorInRTK from '../../../functions/error-functions/generateErrorInRTK';
 
@@ -24,10 +24,15 @@ export const cartApi = createApi({
         }
       },
     }),
-    getCarElementById: builder.query<CartElement | null, string>({
-      queryFn: async (id) => {
+    getCartElementByProductId: builder.query<CartElement | null, string>({
+      queryFn: async (productId: string) => {
         try {
-          const data = await getCartElementById(id);
+          const params = new URLSearchParams();
+          params.append('productId', productId);
+          const paramsString = params.toString();
+
+          const data = await getCartElementByProductId(paramsString);
+          if (Array.isArray(data) && data.length === 0) return { data: null };
           return { data };
         } catch (error: unknown) {
           return generateErrorInRTK(error);
@@ -72,5 +77,6 @@ export const {
   useChangeCartElementQuantityMutation,
   useCreateElementInCartMutation,
   useDeleteCartElementMutation,
-  useGetCarElementByIdQuery,
+  useGetCartElementByProductIdQuery,
+  useLazyGetCartElementByProductIdQuery,
 } = cartApi;

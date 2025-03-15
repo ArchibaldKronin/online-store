@@ -4,17 +4,17 @@ import { Product } from '../../../types';
 import { matchSorter } from 'match-sorter';
 
 export const getProducts = async (
-  page: string,
-  query?: string,
-  sort?: SortSelectStates,
+  pageParams: string,
+  // query?: string,
+  // sort?: SortSelectStates,
 ): Promise<Product[] | null> => {
-  const url = new URL(`${BASE_URL_PRODUCTS}`);
-  if (!query && !sort) {
-    url.searchParams.append('page', page);
-    url.searchParams.append('limit', '10');
-  }
+  // const url = new URL(`${BASE_URL_PRODUCTS}`);
+  // if (!query && !sort) {
+  //   url.searchParams.append('page', page);
+  //   url.searchParams.append('limit', '10');
+  // }
 
-  const response = await fetch(`${url}`);
+  const response = await fetch(`${BASE_URL_PRODUCTS}?${pageParams}`);
   if (!response.ok) {
     throw {
       status: response.status,

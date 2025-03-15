@@ -102,7 +102,7 @@ const ProductPage = () => {
           ) : (
             <Button
               onClick={() => AddToCart(String(product.id))}
-              isActive={!isLoadingCreatingElementInCart}
+              disabled={isLoadingCreatingElementInCart}
             >
               Добавить в корзину
             </Button>

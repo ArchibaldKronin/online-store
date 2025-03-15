@@ -14,8 +14,8 @@ export const getCart = async () => {
   return cart;
 };
 
-export const getCartElementById = async (id: string) => {
-  const response = await fetch(`${BASE_URL_CART}/${id}`);
+export const getCartElementByProductId = async (productIdParams: string) => {
+  const response = await fetch(`${BASE_URL_CART}?${productIdParams}`);
 
   if (!response.ok) {
     throw {
@@ -24,8 +24,8 @@ export const getCartElementById = async (id: string) => {
     };
   }
 
-  const cartElement: CartElement = await response.json();
-  return cartElement;
+  const cartElement: CartElement[] = await response.json();
+  return cartElement[0] || null;
 };
 
 export const createElementInCart = async (productId: string) => {

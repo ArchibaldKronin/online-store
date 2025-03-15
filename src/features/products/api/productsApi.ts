@@ -12,12 +12,18 @@ export const productsApi = createApi({
   endpoints: (builder) => ({
     getProducts: builder.query<
       Product[] | null,
-      { query?: string; page?: string; sort?: SortSelectStates }
+      { query?: string; page: string; sort?: SortSelectStates }
     >({
       queryFn: async ({ query, page = '1', sort }) => {
         try {
-          // let data = await getProducts(query);
-          let data = await getProducts(page, query, sort);
+          const params = new URLSearchParams();
+          if (!query && !sort) {
+            params.set('page', page);
+            params.set('limit', '10');
+          }
+          const paramsString = params.toString();
+
+          let data = await getProducts(paramsString);
 
           if (data) {
             if (query) {
@@ -33,9 +39,6 @@ export const productsApi = createApi({
               default:
                 break;
             }
-          }
-          if (query && data) {
-            data = matchSorter(data, query, { keys: ['title', 'category'] });
           }
 
           return { data };

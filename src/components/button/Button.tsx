@@ -5,14 +5,14 @@ import classNames from 'classnames';
 type ButtonProps = {
   children: ReactNode;
   onClick: () => void;
-  isActive?: boolean;
+  disabled?: boolean;
 };
 
-const Button: FC<ButtonProps> = ({ children, onClick, isActive = true }) => {
+const Button: FC<ButtonProps> = ({ children, onClick, disabled = false }) => {
   return (
     <button
       onClick={onClick}
-      disabled={!isActive}
+      disabled={disabled}
       // className={classNames(styles.greenBg)}
     >
       {children}

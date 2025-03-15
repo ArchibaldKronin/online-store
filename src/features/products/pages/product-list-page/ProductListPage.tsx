@@ -79,15 +79,15 @@ const ProductListPage = () => {
     setSearchParamsAndStor(newParams);
   };
 
-  //////////////// cheking
-  const curentSortingObj = memorableSearchParams.find((param) => 'sort' in param);
-  let curentSorting: string = '';
-  if (curentSortingObj) {
-    curentSorting = curentSortingObj['sort'] || '';
-  } else {
-    curentSorting = '';
-  }
-  ////////////end of cheking
+  // //////////////// cheking
+  // const curentSortingObj = memorableSearchParams.find((param) => 'sort' in param);
+  // let curentSorting: string = '';
+  // if (curentSortingObj) {
+  //   curentSorting = curentSortingObj['sort'] || '';
+  // } else {
+  //   curentSorting = '';
+  // }
+  // ////////////end of cheking
 
   const [currentPage, setCurrentPage] = useState(Number(pageSearchParam));
 
@@ -116,7 +116,7 @@ const ProductListPage = () => {
   };
 
   const checkIsNextButtonActive = () => {
-    if (products && !(products?.length < 10) && !qSearchParam && !sortSearchParam) return true;
+    if (products && products?.length >= 10 && !qSearchParam && !sortSearchParam) return true;
     return false;
   };
 
@@ -132,21 +132,21 @@ const ProductListPage = () => {
   return (
     <div>
       <ProductListHeader onSearch={handleSearch} onChangeSelect={handleChangeSelect} />
-      Текущая сортировка: {curentSorting}
+      {/* Текущая сортировка: {curentSorting} */}
       <ul>
         {products &&
           products.map((product) => (
             <li key={product.id}>
               {/* Исправь переделай и количество в корзине, и факт наличия */}
-              <ProductListComponent {...product} isInTheCart={false} quantityInCart={0} />
+              <ProductListComponent {...product} />
             </li>
           ))}
       </ul>
-      {currentPage}
-      <Button onClick={handlePrevClick} isActive={currentPage > 1}>
+      <Button onClick={handlePrevClick} disabled={currentPage <= 1}>
         Предыдущая страница
       </Button>
-      <Button onClick={handleNextClick} isActive={checkIsNextButtonActive()}>
+      {currentPage}
+      <Button onClick={handleNextClick} disabled={!checkIsNextButtonActive()}>
         Следующая страница
       </Button>
     </div>
