@@ -8,39 +8,80 @@ import styles from './CartElementComponent.module.scss';
 import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
 import { useChangeCartElementQuantityMutation } from '../../features/cart/api/cartApi';
 import { CartElement } from '../../types';
+import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
+import useDebounceCallback from '../../hooks/useDebounceCallback';
 
-const CartElementComponent: FC<{ children?: ReactNode } & CartElement> = ({
+type CartElementComponentProps = CartElement & { onDelete: () => void };
+
+const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentProps> = ({
   productId,
   quantity,
   id,
+  onDelete,
 }) => {
   const {
     data: product,
     error: errorGetProducts,
     isLoading: isLoadingProduct,
   } = useGetProductByIdQuery(String(productId));
-
-  const [
-    changeQuantityInCart,
-    {
-      data: changedElementInCart,
-      isLoading: isLoadingChangeQuantityInCart,
-      error: errorChangeQuantityInCart,
-    },
-  ] = useChangeCartElementQuantityMutation();
+  //ВСЕ ДЕЙСТВИЯ С КОРЗИНОЙ
+  const {
+    changeCartElementQuantityMutation: [
+      changeQuantityInCart,
+      { isLoading: isLoadingChangeQuantityInCart },
+    ],
+    deleteCartElementMutation: [deleteElementInCart, { isLoading: isLoadingDeleteElementInCart }],
+  } = useCartElementMutationsApi();
 
   const [quantityState, setQuantityState] = useState(quantity);
 
+  const [isOverStockState, setIsOverStockState] = useState(false);
+
+  const handleDeleteElement = async () => {
+    await deleteElementInCart(String(id));
+    onDelete();
+  };
+
+  useEffect(() => {
+    if (product) {
+      if (quantityState < product.stock) {
+        setIsOverStockState(false);
+      } else {
+        setIsOverStockState(true);
+      }
+    }
+  }, [product, quantityState, setIsOverStockState]);
+
+  const debounceChangeQuantityInCart = useDebounceCallback(
+    async (args: { id: string; count: number }) => {
+      const result = await changeQuantityInCart(args);
+
+      if ('data' in result && result.data) {
+        setQuantityState(args.count);
+      }
+    },
+    500,
+  );
+
   const handlIncrQuantity = () => {
-    // НЕЛЬЗЯ ДОБАВИТЬ БОЛЬШЕ СТОКА
-    changeQuantityInCart({ id: String(id), count: quantityState + 1 });
-    setQuantityState((prev) => ++prev);
+    setQuantityState((prev) => {
+      const newQuantity = prev + 1;
+      debounceChangeQuantityInCart({ id: String(id), count: newQuantity });
+      return newQuantity;
+    });
   };
 
   const handlDecrQuantity = () => {
-    // ПРИ СНИЖЕНИИ ДО НУЛЯ МЕНЯТЬ КНОПКИ
-    changeQuantityInCart({ id: String(id), count: quantityState - 1 });
-    setQuantityState((prev) => --prev);
+    setQuantityState((prev) => {
+      const newQuantity = prev > 1 ? prev - 1 : 0;
+      if (newQuantity < 1) {
+        handleDeleteElement();
+        return 0;
+      } else {
+        debounceChangeQuantityInCart({ id: String(id), count: newQuantity });
+        return newQuantity;
+      }
+    });
   };
 
   const navigate = useNavigate();
@@ -48,10 +89,6 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElement> = ({
   const handleToProductClick = () => {
     navigate(`/products/${productId}`);
   };
-
-  // Проверять что количество в корзине не 0. Если 0, то вызывать переданный колбэк из родителя и удалять с сервера,
-  // вызывать перезагрузку корзины
-  useEffect(() => {}, []);
 
   if (isLoadingProduct) return <div>Loading...</div>;
   if (!product) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
@@ -73,6 +110,7 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElement> = ({
         >
           {quantityState}
         </СhangeQuantityItem>
+        <Button onClick={handleDeleteElement}>Удалить из корзины</Button>
       </div>
       <div>
         <Button onClick={handleToProductClick}>К товару</Button>

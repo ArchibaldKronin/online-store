@@ -79,4 +79,5 @@ export const {
   useDeleteCartElementMutation,
   useGetCartElementByProductIdQuery,
   useLazyGetCartElementByProductIdQuery,
+  useLazyGetCartQuery,
 } = cartApi;

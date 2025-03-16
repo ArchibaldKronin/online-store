@@ -1,7 +1,7 @@
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import ErrorPage from '../../../components/error-page/ErrorPage';
 import Loader from '../../../components/loader/Loader';
-import { useGetCartQuery } from '../api/cartApi';
+import { useGetCartQuery, useLazyGetCartQuery } from '../api/cartApi';
 import CartElementComponent from '../../../components/cartElementComponent/CartElementComponent';
 
 const CartPage = () => {
@@ -9,7 +9,13 @@ const CartPage = () => {
     data: cart,
     error,
     isLoading,
-  } = useGetCartQuery(undefined, { refetchOnMountOrArgChange: true });
+  } = useGetCartQuery(undefined, { refetchOnMountOrArgChange: true, refetchOnFocus: true });
+
+  const [triggerGetCart] = useLazyGetCartQuery();
+
+  const deleteElementeHandle = () => {
+    triggerGetCart();
+  };
 
   if (isLoading) return <Loader />;
   if (error) return <ErrorPage er={error as FetchBaseQueryError} />;
@@ -19,16 +25,10 @@ const CartPage = () => {
       <h3>Корзина</h3>
       <div>
         <ul>
-          {/* Засылай в элемент корзины колбэк, чтобы знать, если предмет из корзины будет удален */}
-          {/*  И удалять его из списка*/}
-          {/*  */}
           {cart
             ? cart.map((cartItem) => (
                 <li key={cartItem.id}>
-                  {/* <p>ID товара в каталоге: {cartItem.productId}</p>
-                  <p>Количество в корзине: {cartItem.quantity}</p>
-                  ////////////////////////////////////////////////// */}
-                  <CartElementComponent {...cartItem} />
+                  <CartElementComponent {...cartItem} onDelete={deleteElementeHandle} />
                 </li>
               ))
             : 'Корзина пуста'}

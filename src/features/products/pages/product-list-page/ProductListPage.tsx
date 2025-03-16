@@ -18,9 +18,7 @@ const ProductListPage = () => {
   const [memorableSearchParams, setMemorableSearchParams] = useCustomSearchParam([
     'q',
     'sort',
-    ///
     'page',
-    ///
   ]);
 
   //получение параметра поиска для запроса каталога

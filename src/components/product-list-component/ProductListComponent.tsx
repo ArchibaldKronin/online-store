@@ -13,6 +13,7 @@ import {
   useLazyGetCartElementByProductIdQuery,
 } from '../../features/cart/api/cartApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
+import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 
 type ProductListComponentProps = Product & {
   children?: ReactNode;
@@ -28,20 +29,24 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   stock,
 }) => {
   const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
-    useGetCartElementByProductIdQuery(String(id), { refetchOnMountOrArgChange: true });
+    useGetCartElementByProductIdQuery(String(id), {
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    });
 
   const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
 
-  const [
-    createElementInCart,
-    {
-      data: newElementInCart,
-      isLoading: isLoadingCreatingElementInCart,
-      error: errorCreateElementInCart,
-    },
-  ] = useCreateElementInCartMutation();
-
-  const [deleteElementInCart] = useDeleteCartElementMutation();
+  const {
+    createElementInCartMutation: [
+      createElementInCart,
+      { isLoading: isLoadingCreatingElementInCart },
+    ],
+    changeCartElementQuantityMutation: [
+      changeQuantityInCart,
+      { isLoading: isLoadingChangeQuantityInCart },
+    ],
+    deleteCartElementMutation: [deleteElementInCart, { isLoading: isLoadingDeleteElementInCart }],
+  } = useCartElementMutationsApi();
 
   const quantityInCart: number = elementInCart ? elementInCart.quantity : 0;
   const [quantityInCartState, setQuantityInCartState] = useState<number>(quantityInCart);
@@ -71,15 +76,6 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
     }
     setQuantityInCartState(1);
   }
-
-  const [
-    changeQuantityInCart,
-    {
-      data: changedElementInCart,
-      isLoading: isLoadingChangeQuantityInCart,
-      error: errorChangeQuantityInCart,
-    },
-  ] = useChangeCartElementQuantityMutation();
 
   const debounceChangeQuantityInCart = useDebounceCallback(
     async (args: { id: string; count: number }) => {
@@ -161,7 +157,11 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
           <СhangeQuantityItem
             onClickMinus={handlDecrQuantity}
             onClickPlus={handlIncrQuantity}
-            isLoading={isLoadingChangeQuantityInCart || isLoadingCreatingElementInCart}
+            isLoading={
+              isLoadingChangeQuantityInCart ||
+              isLoadingCreatingElementInCart ||
+              isLoadingDeleteElementInCart
+            }
             disablePlusBtn={isOverStockState}
             disableMinusBtn={quantityInCartState < 1}
           >
