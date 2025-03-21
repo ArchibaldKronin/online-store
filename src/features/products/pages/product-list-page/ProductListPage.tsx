@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ErrorPage from '../../../../components/error-page/ErrorPage';
 import Loader from '../../../../components/loader/Loader';
 import { useGetProductsQuery } from '../../api/productsApi';
@@ -50,18 +50,19 @@ const ProductListPage = () => {
   //каждый раз при монтировании, проверять хранилище
   useGetParamsFromStoreEffect(['q', 'sort', 'page'], setMemorableSearchParams);
 
+  const [currentPage, setCurrentPage] = useState(Number(pageSearchParam));
+
   //пропсы
   const handleSearch = useCallback(
     (query: string) => {
       const newParams = memorableSearchParams.map((obj) => {
         if (obj.hasOwnProperty('q')) {
           return { q: query };
-        } else {
-          return { ...obj };
         }
+        return { ...obj };
       });
-
       setSearchParamsAndStor(newParams);
+      setCurrentPage(1);
     },
     [setSearchParamsAndStor],
   );
@@ -70,24 +71,15 @@ const ProductListPage = () => {
     const newParams = memorableSearchParams.map((obj) => {
       if (obj.hasOwnProperty('sort')) {
         return { sort: query };
-      } else {
-        return { ...obj };
       }
+      if (obj.hasOwnProperty('page')) {
+        return { page: String(1) };
+      }
+      return { ...obj };
     });
     setSearchParamsAndStor(newParams);
+    setCurrentPage(1);
   };
-
-  // //////////////// cheking
-  // const curentSortingObj = memorableSearchParams.find((param) => 'sort' in param);
-  // let curentSorting: string = '';
-  // if (curentSortingObj) {
-  //   curentSorting = curentSortingObj['sort'] || '';
-  // } else {
-  //   curentSorting = '';
-  // }
-  // ////////////end of cheking
-
-  const [currentPage, setCurrentPage] = useState(Number(pageSearchParam));
 
   const handlePrevClick = () => {
     setCurrentPage((prevPage) => --prevPage);
@@ -114,12 +106,9 @@ const ProductListPage = () => {
   };
 
   const checkIsNextButtonActive = () => {
-    if (products && products?.length >= 10 && !qSearchParam && !sortSearchParam) return true;
+    if (products && products?.length >= 10 && !qSearchParam) return true;
     return false;
   };
-
-  console.log(currentPage);
-  console.log('АКТИВНОСТЬ: ', products && !(products?.length < 10));
 
   if (isLoading) {
     return <Loader />;

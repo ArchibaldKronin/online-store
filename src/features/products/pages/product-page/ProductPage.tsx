@@ -5,13 +5,15 @@ import ErrorPage from '../../../../components/error-page/ErrorPage';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import classNames from 'classnames';
 import styles from './ProductPage.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import СhangeQuantityItem from '../../../../components/changeQuantityItem/СhangeQuantityItem';
 import Button from '../../../../components/button/Button';
 import {
-  useChangeCartElementQuantityMutation,
-  useCreateElementInCartMutation,
+  useGetCartElementByProductIdQuery,
+  useLazyGetCartElementByProductIdQuery,
 } from '../../../cart/api/cartApi';
+import useCartElementMutationsApi from '../../../../hooks/useCartElementMutationsApi';
+import useDebounceCallback from '../../../../hooks/useDebounceCallback';
 
 const ProductPage = () => {
   const { productId } = useParams();
@@ -26,48 +28,95 @@ const ProductPage = () => {
     isLoading: isLoadingProducts,
   } = useGetProductByIdQuery(productId);
 
-  console.log(product);
+  const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
+    useGetCartElementByProductIdQuery(String(product?.id), {
+      skip: !product?.id,
+      refetchOnMountOrArgChange: true,
+      refetchOnFocus: true,
+    });
 
-  //КОРЗИНА
-  const [quantityInCart, setQuantityInCart] = useState(0); //исправить естественно получая данные с сервера о товарах в корзине
+  const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
 
-  const [
-    createElementInCart,
-    {
-      data: elementInCart,
-      isLoading: isLoadingCreatingElementInCart,
-      error: errorCreateElementInCart,
+  const {
+    createElementInCartMutation: [
+      createElementInCart,
+      { isLoading: isLoadingCreatingElementInCart, error: errorCreateElementInCart },
+    ],
+    changeCartElementQuantityMutation: [
+      changeQuantityInCart,
+      { isLoading: isLoadingChangeQuantityInCart, error: errorChangeQuantityInCart },
+    ],
+    deleteCartElementMutation: [
+      deleteElementInCart,
+      { isLoading: isLoadingDeleteElementInCart, error: errorDeleteCartElementMutation },
+    ],
+  } = useCartElementMutationsApi();
+
+  const quantityInCart: number = elementInCart ? elementInCart.quantity : 0;
+  const [quantityInCartState, setQuantityInCartState] = useState<number>(quantityInCart);
+
+  const [isOverStockState, setIsOverStockState] = useState(false);
+
+  useEffect(() => {
+    if (product) {
+      if (quantityInCartState < product.stock) {
+        setIsOverStockState(false);
+      } else {
+        setIsOverStockState(true);
+      }
+    }
+  }, [product, quantityInCartState, setIsOverStockState]);
+
+  useEffect(() => {
+    if (elementInCart) {
+      setQuantityInCartState(elementInCart.quantity);
+    } else {
+      setQuantityInCartState(0);
+    }
+  }, [elementInCart, setQuantityInCartState]);
+
+  const debouncedChangeQuantityInCart = useDebounceCallback(
+    async (args: { id: string; count: number }) => {
+      const result = await changeQuantityInCart(args);
+
+      if ('data' in result && result.data) {
+        triggerGetElementInCart(String(result.data.productId));
+      }
     },
-  ] = useCreateElementInCartMutation();
+    500,
+  );
 
-  async function AddToCart(id: string) {
-    createElementInCart(id);
-    setQuantityInCart(1); // ИСПРАВИТЬ ЕСТЕСТВЕННО
+  async function handleAddToCart() {
+    const result = await createElementInCart(String(product?.id));
+    if ('data' in result && result.data) {
+      triggerGetElementInCart(String(result.data.productId));
+    }
+    setQuantityInCartState(1);
   }
 
-  const [
-    changeQuantityInCart,
-    {
-      data: changedElementInCart,
-      isLoading: isLoadingChangeQuantityInCart,
-      error: errorChangeQuantityInCart,
-    },
-  ] = useChangeCartElementQuantityMutation();
+  async function handleDeleteElement() {
+    // debouncedDeleteElementInCart();
+    const result = await deleteElementInCart(String(elementInCart?.id));
+    if ('data' in result && result.data) {
+      triggerGetElementInCart(String(result.data.productId));
+    }
+    setQuantityInCartState(0);
+  }
 
   const handlIncrQuantity = () => {
-    if (!elementInCart) return;
-    // НЕЛЬЗЯ ДОБАВИТЬ БОЛЬШЕ СТОКА
-    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCart + 1 });
-    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
-    setQuantityInCart((prev) => ++prev);
+    setQuantityInCartState((prev) => {
+      const newQuantity = prev + 1;
+      debouncedChangeQuantityInCart({ id: String(elementInCart?.id), count: newQuantity });
+      return newQuantity;
+    });
   };
 
   const handlDecrQuantity = () => {
-    if (!elementInCart) return;
-    // ПРИ СНИЖЕНИИ ДО НУЛЯ МЕНЯТЬ КНОПКИ
-    changeQuantityInCart({ id: String(elementInCart.id), count: quantityInCart - 1 });
-    //исправить elementInCart.id. Нужно сразу понимать, есть ли товар в корзине. А не в зависимости от добавления
-    setQuantityInCart((prev) => --prev);
+    setQuantityInCartState((prev) => {
+      const newQuantity = prev > 1 ? prev - 1 : 0;
+      debouncedChangeQuantityInCart({ id: String(elementInCart?.id), count: newQuantity });
+      return newQuantity;
+    });
   };
 
   if (isLoadingProducts) return <Loader />;
@@ -76,6 +125,8 @@ const ProductPage = () => {
     return <ErrorPage er={errorCreateElementInCart as FetchBaseQueryError} />;
   if (errorChangeQuantityInCart)
     return <ErrorPage er={errorChangeQuantityInCart as FetchBaseQueryError} />;
+  if (errorDeleteCartElementMutation)
+    return <ErrorPage er={errorDeleteCartElementMutation as FetchBaseQueryError} />;
   if (!product) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
   return (
     <div className={classNames(styles.productComponentContainer)}>
@@ -91,19 +142,27 @@ const ProductPage = () => {
         <div className={classNames(styles.price)}>{product.price} у.е.</div>
         {/* выдели жирным */}
         <div className="manualsContainer">
-          {quantityInCart > 0 ? (
-            <СhangeQuantityItem
-              onClickMinus={handlDecrQuantity}
-              onClickPlus={handlIncrQuantity}
-              isLoading={isLoadingChangeQuantityInCart || isLoadingCreatingElementInCart}
-            >
-              {quantityInCart}
-            </СhangeQuantityItem>
+          {quantityInCartState > 0 ? (
+            <>
+              <СhangeQuantityItem
+                onClickMinus={handlDecrQuantity}
+                onClickPlus={handlIncrQuantity}
+                isLoading={
+                  isLoadingChangeQuantityInCart ||
+                  isLoadingCreatingElementInCart ||
+                  isLoadingDeleteElementInCart
+                }
+                disablePlusBtn={isOverStockState}
+                disableMinusBtn={quantityInCartState < 2}
+              >
+                {quantityInCartState}
+              </СhangeQuantityItem>
+              <Button onClick={handleDeleteElement} disabled={isLoadingDeleteElementInCart}>
+                Удалить из корзины
+              </Button>
+            </>
           ) : (
-            <Button
-              onClick={() => AddToCart(String(product.id))}
-              disabled={isLoadingCreatingElementInCart}
-            >
+            <Button onClick={handleAddToCart} disabled={isLoadingCreatingElementInCart}>
               Добавить в корзину
             </Button>
           )}

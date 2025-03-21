@@ -17,9 +17,13 @@ export const productsApi = createApi({
       queryFn: async ({ query, page = '1', sort }) => {
         try {
           const params = new URLSearchParams();
-          if (!query && !sort) {
+          if (!query) {
             params.set('page', page);
             params.set('limit', '10');
+            if (sort) {
+              params.set('sortBy', 'price');
+              params.set('order', sort);
+            }
           }
           const paramsString = params.toString();
 
@@ -28,16 +32,6 @@ export const productsApi = createApi({
           if (data) {
             if (query) {
               data = matchSorter(data, query, { keys: ['title', 'category'] });
-            }
-            switch (sort) {
-              case 'asc':
-                data.sort((a, b) => (+a.price > +b.price ? 1 : -1));
-                break;
-              case 'desc':
-                data.sort((a, b) => (+a.price < +b.price ? 1 : -1));
-                break;
-              default:
-                break;
             }
           }
 

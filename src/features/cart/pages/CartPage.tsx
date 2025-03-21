@@ -3,6 +3,7 @@ import ErrorPage from '../../../components/error-page/ErrorPage';
 import Loader from '../../../components/loader/Loader';
 import { useGetCartQuery, useLazyGetCartQuery } from '../api/cartApi';
 import CartElementComponent from '../../../components/cartElementComponent/CartElementComponent';
+import { useEffect, useMemo, useState } from 'react';
 
 const CartPage = () => {
   const {
@@ -13,7 +14,26 @@ const CartPage = () => {
 
   const [triggerGetCart] = useLazyGetCartQuery();
 
-  const deleteElementeHandle = () => {
+  const [totalAccountObjectState, setTotalAccountObjectState] = useState<Record<string, number>>(
+    {},
+  );
+
+  const billMemo = useMemo(() => {
+    return Object.values(totalAccountObjectState).reduce((sum, val) => sum + val, 0);
+  }, [totalAccountObjectState]);
+
+  const calculateElementBill = (quantity: number, price: number, id: string) => {
+    setTotalAccountObjectState((prev) => ({ ...prev, [id]: price * quantity }));
+  };
+
+  const deleteElementBill = (id: string) => {
+    setTotalAccountObjectState((prev) => {
+      const { [id]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
+  const changeElementeHandle = () => {
     triggerGetCart();
   };
 
@@ -28,12 +48,18 @@ const CartPage = () => {
           {cart
             ? cart.map((cartItem) => (
                 <li key={cartItem.id}>
-                  <CartElementComponent {...cartItem} onDelete={deleteElementeHandle} />
+                  <CartElementComponent
+                    {...cartItem}
+                    onChangeCallback={changeElementeHandle}
+                    calculateBillCallback={calculateElementBill}
+                    deleteElementFromTotalAccountCallback={deleteElementBill}
+                  />
                 </li>
               ))
             : 'Корзина пуста'}
         </ul>
       </div>
+      <div>Всего к оплате: {billMemo} у.е.</div>
     </div>
   );
 };

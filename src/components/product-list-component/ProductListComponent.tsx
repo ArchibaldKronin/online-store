@@ -26,92 +26,92 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
   image,
   category,
   description,
-  stock,
+  // stock,
 }) => {
-  const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
-    useGetCartElementByProductIdQuery(String(id), {
-      refetchOnMountOrArgChange: true,
-      refetchOnFocus: true,
-    });
+  // const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
+  //   useGetCartElementByProductIdQuery(String(id), {
+  //     refetchOnMountOrArgChange: true,
+  //     refetchOnFocus: true,
+  //   });
 
-  const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
+  // const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
 
-  const {
-    createElementInCartMutation: [
-      createElementInCart,
-      { isLoading: isLoadingCreatingElementInCart },
-    ],
-    changeCartElementQuantityMutation: [
-      changeQuantityInCart,
-      { isLoading: isLoadingChangeQuantityInCart },
-    ],
-    deleteCartElementMutation: [deleteElementInCart, { isLoading: isLoadingDeleteElementInCart }],
-  } = useCartElementMutationsApi();
+  // const {
+  //   createElementInCartMutation: [
+  //     createElementInCart,
+  //     { isLoading: isLoadingCreatingElementInCart },
+  //   ],
+  //   changeCartElementQuantityMutation: [
+  //     changeQuantityInCart,
+  //     { isLoading: isLoadingChangeQuantityInCart },
+  //   ],
+  //   deleteCartElementMutation: [deleteElementInCart, { isLoading: isLoadingDeleteElementInCart }],
+  // } = useCartElementMutationsApi();
 
-  const quantityInCart: number = elementInCart ? elementInCart.quantity : 0;
-  const [quantityInCartState, setQuantityInCartState] = useState<number>(quantityInCart);
+  // const quantityInCart: number = elementInCart ? elementInCart.quantity : 0;
+  // const [quantityInCartState, setQuantityInCartState] = useState<number>(quantityInCart);
 
-  const [isOverStockState, setIsOverStockState] = useState(false);
+  // const [isOverStockState, setIsOverStockState] = useState(false);
 
-  useEffect(() => {
-    if (quantityInCartState < stock) {
-      setIsOverStockState(false);
-    } else {
-      setIsOverStockState(true);
-    }
-  }, [quantityInCartState, setIsOverStockState]);
+  // useEffect(() => {
+  //   if (quantityInCartState < stock) {
+  //     setIsOverStockState(false);
+  //   } else {
+  //     setIsOverStockState(true);
+  //   }
+  // }, [quantityInCartState, setIsOverStockState]);
 
-  useEffect(() => {
-    if (elementInCart) {
-      setQuantityInCartState(elementInCart.quantity);
-    } else {
-      setQuantityInCartState(0);
-    }
-  }, [elementInCart, setQuantityInCartState]);
+  // useEffect(() => {
+  //   if (elementInCart) {
+  //     setQuantityInCartState(elementInCart.quantity);
+  //   } else {
+  //     setQuantityInCartState(0);
+  //   }
+  // }, [elementInCart, setQuantityInCartState]);
 
-  async function AddToCart(id: string) {
-    const result = await createElementInCart(id);
-    if ('data' in result && result.data) {
-      triggerGetElementInCart(id);
-    }
-    setQuantityInCartState(1);
-  }
+  // async function AddToCart(id: string) {
+  //   const result = await createElementInCart(id);
+  //   if ('data' in result && result.data) {
+  //     triggerGetElementInCart(id);
+  //   }
+  //   setQuantityInCartState(1);
+  // }
 
-  const debounceChangeQuantityInCart = useDebounceCallback(
-    async (args: { id: string; count: number }) => {
-      const result = await changeQuantityInCart(args);
+  // const debounceChangeQuantityInCart = useDebounceCallback(
+  //   async (args: { id: string; count: number }) => {
+  //     const result = await changeQuantityInCart(args);
 
-      if ('data' in result && result.data) {
-        triggerGetElementInCart(String(result.data.productId));
-      }
-    },
-    500,
-  );
+  //     if ('data' in result && result.data) {
+  //       triggerGetElementInCart(String(result.data.productId));
+  //     }
+  //   },
+  //   500,
+  // );
 
-  const handlIncrQuantity = () => {
-    if (elementInCart) {
-      setQuantityInCartState((prev) => {
-        const newQuantity = prev + 1;
-        debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
-        return newQuantity;
-      });
-    }
-  };
+  // const handlIncrQuantity = () => {
+  //   if (elementInCart) {
+  //     setQuantityInCartState((prev) => {
+  //       const newQuantity = prev + 1;
+  //       debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
+  //       return newQuantity;
+  //     });
+  //   }
+  // };
 
-  const handlDecrQuantity = () => {
-    if (elementInCart) {
-      setQuantityInCartState((prev) => {
-        const newQuantity = prev > 1 ? prev - 1 : 0;
-        if (newQuantity < 1) {
-          deleteElementInCart(String(elementInCart.id));
-          return 0;
-        } else {
-          debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
-          return newQuantity;
-        }
-      });
-    }
-  };
+  // const handlDecrQuantity = () => {
+  //   if (elementInCart) {
+  //     setQuantityInCartState((prev) => {
+  //       const newQuantity = prev > 1 ? prev - 1 : 0;
+  //       if (newQuantity < 1) {
+  //         deleteElementInCart(String(elementInCart.id));
+  //         return 0;
+  //       } else {
+  //         debounceChangeQuantityInCart({ id: String(elementInCart.id), count: newQuantity });
+  //         return newQuantity;
+  //       }
+  //     });
+  //   }
+  // };
 
   const navigate = useNavigate();
   const [isSelecting, setIsSelecting] = useState(false);
@@ -150,10 +150,10 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
           {/* выдели жирным */}
         </div>
         {/* <h3>{elementInCartState ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3> */}
-        <h3>{elementInCart ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3>
+        {/* <h3>{quantityInCartState > 0 ? 'ЕСТЬ в корзине' : 'НЕТ в корзине'}</h3> */}
       </div>
       <div className="manualsContainer" onClick={(e) => e.stopPropagation()}>
-        {quantityInCartState > 0 ? (
+        {/* {quantityInCartState > 0 ? (
           <СhangeQuantityItem
             onClickMinus={handlDecrQuantity}
             onClickPlus={handlIncrQuantity}
@@ -171,7 +171,7 @@ const ProductListComponent: FC<ProductListComponentProps> = ({
           <Button onClick={() => AddToCart(String(id))} disabled={isLoadingCreatingElementInCart}>
             Добавить в корзину
           </Button>
-        )}
+        )} */}
       </div>
     </div>
   );

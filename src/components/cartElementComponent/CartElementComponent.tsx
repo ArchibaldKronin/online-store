@@ -11,13 +11,19 @@ import { CartElement } from '../../types';
 import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
 
-type CartElementComponentProps = CartElement & { onDelete: () => void };
+type CartElementComponentProps = CartElement & {
+  onChangeCallback: () => void;
+  calculateBillCallback: (quantity: number, price: number, id: string) => void;
+  deleteElementFromTotalAccountCallback: (id: string) => void;
+};
 
 const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentProps> = ({
   productId,
   quantity,
   id,
-  onDelete,
+  onChangeCallback,
+  calculateBillCallback,
+  deleteElementFromTotalAccountCallback,
 }) => {
   const {
     data: product,
@@ -37,10 +43,11 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
 
   const [isOverStockState, setIsOverStockState] = useState(false);
 
-  const handleDeleteElement = async () => {
-    await deleteElementInCart(String(id));
-    onDelete();
-  };
+  useEffect(() => {
+    if (product) {
+      calculateBillCallback(quantity, product.price, String(id));
+    }
+  }, [product, quantity, id]);
 
   useEffect(() => {
     if (product) {
@@ -52,12 +59,12 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
     }
   }, [product, quantityState, setIsOverStockState]);
 
-  const debounceChangeQuantityInCart = useDebounceCallback(
+  const debouncedChangeQuantityInCart = useDebounceCallback(
     async (args: { id: string; count: number }) => {
       const result = await changeQuantityInCart(args);
 
       if ('data' in result && result.data) {
-        setQuantityState(args.count);
+        onChangeCallback();
       }
     },
     500,
@@ -66,7 +73,7 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
   const handlIncrQuantity = () => {
     setQuantityState((prev) => {
       const newQuantity = prev + 1;
-      debounceChangeQuantityInCart({ id: String(id), count: newQuantity });
+      debouncedChangeQuantityInCart({ id: String(id), count: newQuantity });
       return newQuantity;
     });
   };
@@ -74,14 +81,18 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
   const handlDecrQuantity = () => {
     setQuantityState((prev) => {
       const newQuantity = prev > 1 ? prev - 1 : 0;
-      if (newQuantity < 1) {
-        handleDeleteElement();
-        return 0;
-      } else {
-        debounceChangeQuantityInCart({ id: String(id), count: newQuantity });
-        return newQuantity;
-      }
+      debouncedChangeQuantityInCart({ id: String(id), count: newQuantity });
+      return newQuantity;
     });
+  };
+
+  const handleDeleteElement = async () => {
+    const result = await deleteElementInCart(String(id));
+
+    if ('data' in result && result.data) {
+      onChangeCallback();
+      deleteElementFromTotalAccountCallback(String(id));
+    }
   };
 
   const navigate = useNavigate();
@@ -104,13 +115,17 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
       </div>
       <div>
         <СhangeQuantityItem
-          isLoading={isLoadingChangeQuantityInCart}
+          isLoading={isLoadingChangeQuantityInCart || isLoadingDeleteElementInCart}
           onClickMinus={handlDecrQuantity}
           onClickPlus={handlIncrQuantity}
+          disableMinusBtn={quantityState < 2}
+          disablePlusBtn={isOverStockState}
         >
           {quantityState}
         </СhangeQuantityItem>
-        <Button onClick={handleDeleteElement}>Удалить из корзины</Button>
+        <Button onClick={handleDeleteElement} disabled={isLoadingChangeQuantityInCart}>
+          Удалить из корзины
+        </Button>
       </div>
       <div>
         <Button onClick={handleToProductClick}>К товару</Button>
