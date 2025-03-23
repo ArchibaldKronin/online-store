@@ -11,10 +11,12 @@ import { CartElement } from '../../types';
 import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
 
-type CartElementComponentProps = CartElement & {
+export type CartElementComponentProps = CartElement & {
   onChangeCallback: () => void;
   calculateBillCallback: (quantity: number, price: number, id: string) => void;
   deleteElementFromTotalAccountCallback: (id: string) => void;
+  getProductStockCallback: (id: string, stock: number) => void;
+  deleteProductStockCallback: (id: string) => void;
 };
 
 const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentProps> = ({
@@ -24,6 +26,8 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
   onChangeCallback,
   calculateBillCallback,
   deleteElementFromTotalAccountCallback,
+  getProductStockCallback,
+  deleteProductStockCallback,
 }) => {
   const {
     data: product,
@@ -42,6 +46,12 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
   const [quantityState, setQuantityState] = useState(quantity);
 
   const [isOverStockState, setIsOverStockState] = useState(false);
+
+  useEffect(() => {
+    if (product) {
+      getProductStockCallback(String(productId), product.stock);
+    }
+  }, [product, productId]);
 
   useEffect(() => {
     if (product) {
@@ -92,6 +102,7 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
     if ('data' in result && result.data) {
       onChangeCallback();
       deleteElementFromTotalAccountCallback(String(id));
+      deleteProductStockCallback(String(productId));
     }
   };
 

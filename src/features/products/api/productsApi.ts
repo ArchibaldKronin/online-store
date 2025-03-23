@@ -56,8 +56,10 @@ export const productsApi = createApi({
       { id: string; stock: number; countInCart: number }
     >({
       queryFn: async ({ id, stock, countInCart }) => {
+        const newStock = stock - countInCart;
+
         try {
-          const data = await changeProductStock({ id, stock, countInCart });
+          const data = await changeProductStock({ id, newStock });
           return { data };
         } catch (error: unknown) {
           return generateErrorInRTK(error);

@@ -36,16 +36,11 @@ export const getProductById = async (id: string) => {
   return product;
 };
 
-export const changeProductStock = async (arg: {
-  id: string;
-  stock: number;
-  countInCart: number;
-}) => {
-  const newStock = arg.stock - arg.countInCart;
+export const changeProductStock = async (arg: { id: string; newStock: number }) => {
   const response = await fetch(`${BASE_URL_PRODUCTS}/${arg.id}`, {
     method: 'PUT',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ stock: newStock }),
+    body: JSON.stringify({ stock: arg.newStock }),
   });
   if (!response.ok)
     throw {
