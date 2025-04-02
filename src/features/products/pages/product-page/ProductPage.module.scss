@@ -1,66 +1,144 @@
 @use '../../../../styles/mixins';
+@use '../../../../styles/variables';
 
-.redBg {
-  background-color: red;
-}
-
-.greenBg {
-  background-color: green;
-}
-
-.yellowdBg {
-  background-color: yellow;
-}
-
-.blueBg {
-  background-color: blue;
-}
-
-.orangeBg {
-  background-color: orange;
-}
-
-.purpleBg {
-  background-color: purple;
-}
-
-.pinkBg {
-  background-color: pink;
-}
-
-.cyanBg {
-  background-color: cyan;
-}
-
-.brownBg {
-  background-color: brown;
-}
-
-.grayBg {
-  background-color: gray;
-}
-
-.limeBg {
-  background-color: lime;
-}
-
-.productComponentContainer {
+.container {
+  // background-color: lime;
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  width: 100%;
+  min-width: 30rem;
+
+  @include mixins.media(tablet) {
+    flex-direction: row;
+  }
+
+  @include mixins.media(desktop) {
+    padding: 1.8rem 0;
+    flex-direction: column;
+    gap: 1.8rem;
+    background-color: variables.$surface-color;
+    @include mixins.border-radius();
+    box-shadow:
+      0 0px 2px hsla(0, 0%, 100%, 0.6),
+      0 1px 4px hsla(0, 0%, 0%, 0.2);
+    @include mixins.flex-center;
+  }
 }
 
 .imgContainer {
-  width: 640px;
-  height: 640px;
+  width: 100%;
+  min-width: 30rem;
+
+  @include mixins.flex-center;
+
+  @include mixins.border-radius();
+
+  @include mixins.media(tablet) {
+    flex: 1;
+  }
+
+  @include mixins.media(desktop) {
+    flex: initial;
+  }
+}
+
+.imgContainer img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+
+  border-radius: inherit;
+}
+
+.mainInfoContainer {
+  @include mixins.media(tablet) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1.25;
+  }
+
+  @include mixins.media(desktop) {
+    flex: initial;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 .category {
-  @include mixins.bold;
-}
-
-.description {
-  @include mixins.text-ellipsis(2);
+  color: variables.$text-muted-color;
 }
 
 .price {
-  @include mixins.bold;
+  font-weight: bold;
 }
+
+.manualsContainer {
+  width: 300px;
+  padding-bottom: 0.7rem;
+
+  @include mixins.media(desktop) {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.manualsContainer button {
+  background-color: variables.$secondary-color;
+  width: 13rem;
+}
+
+// .manualsContainer > .buttonAddInCartContainer button {
+//   background-color: variables.$secondary-color;
+//   width: 15rem;
+// }
+
+.manualsContainerWithCart {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  // background-color: red;
+
+  // @include mixins.media(desktop) {
+  //   background-color: red;
+  //   display: flex;
+  //   justify-content: center;
+  // }
+}
+
+.manualsContainerWithCart button {
+  width: 13rem;
+  // background-color: yellow;
+
+  // @include mixins.media(desktop) {
+  //   background-color: red;
+  //   display: flex;
+  //   justify-content: center;
+  // }
+}
+
+.manualsContainerWithCart .buttonDeleteFromCartContainer {
+  padding-top: 1rem;
+}
+
+.manualsContainerWithCart .buttonDeleteFromCartContainer button {
+  background-color: rgb(253, 102, 75);
+
+  // @include mixins.media(desktop) {
+  //   background-color: red;
+  //   display: flex;
+  //   justify-content: center;
+  // }
+}
+
+// .manualsContainer > .buttonsChangeQuantContainer button {
+//   background-color: variables.$secondary-color;
+//   width: 15rem;
+// }
+// .manualsContainer > .buttonDeleteFromCartContainer button {
+//   background-color: variables.$secondary-color;
+//   width: 15rem;
+// }

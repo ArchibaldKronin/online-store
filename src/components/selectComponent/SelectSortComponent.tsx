@@ -1,5 +1,7 @@
 import { FC, useState } from 'react';
 import { getStringFromSession } from '../../functions/session-storage-functions/queryStorageFunctions';
+import classNames from 'classnames';
+import styles from './SelectComponent.module.scss';
 
 export interface SelectComponentProps {
   onChangeSelect: (q: SortSelectStates) => void;
@@ -19,14 +21,13 @@ const SelectSortComponent: FC<SelectComponentProps> = ({ onChangeSelect }) => {
   };
 
   return (
-    <div>
+    <div className={classNames(styles.searchContainer)}>
       <label htmlFor="sort">Сортировать по цене:</label>
       <select id="sort" value={sortOrder} onChange={handleSortSelectChange}>
         <option value="">Без сортировки</option>
         <option value="asc">По возрастанию</option>
         <option value="desc">По убыванию</option>
       </select>
-      ;
     </div>
   );
 };

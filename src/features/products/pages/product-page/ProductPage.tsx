@@ -95,7 +95,6 @@ const ProductPage = () => {
   }
 
   async function handleDeleteElement() {
-    // debouncedDeleteElementInCart();
     const result = await deleteElementInCart(String(elementInCart?.id));
     if ('data' in result && result.data) {
       triggerGetElementInCart(String(result.data.productId));
@@ -129,19 +128,24 @@ const ProductPage = () => {
     return <ErrorPage er={errorDeleteCartElementMutation as FetchBaseQueryError} />;
   if (!product) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
   return (
-    <div className={classNames(styles.productComponentContainer)}>
+    <div className={classNames(styles.container)}>
       <div className={classNames(styles.imgContainer)}>
         <img src={product.image} alt={`Image of the ${product.title}`} />
       </div>
       <div className={classNames(styles.mainInfoContainer)}>
-        <h3>{product.title}</h3>
+        <h3 className={classNames(styles.title)}>{product.title}</h3>
         <p className={classNames(styles.category)}>Категория: {product.category}</p>
         {/* выдели жирным */}
         <p className={classNames(styles.description)}>{product.description}</p>
         {/* описание пусть обрывается с многоточием */}
-        <div className={classNames(styles.price)}>{product.price} у.е.</div>
+        <p className={classNames(styles.price)}>{product.price} у.е.</p>
         {/* выдели жирным */}
-        <div className="manualsContainer">
+        <div
+          className={classNames(
+            styles.manualsContainer,
+            quantityInCartState > 0 && styles.manualsContainerWithCart,
+          )}
+        >
           {quantityInCartState > 0 ? (
             <>
               <СhangeQuantityItem
@@ -157,14 +161,18 @@ const ProductPage = () => {
               >
                 {quantityInCartState}
               </СhangeQuantityItem>
-              <Button onClick={handleDeleteElement} disabled={isLoadingDeleteElementInCart}>
-                Удалить из корзины
-              </Button>
+              <div className={classNames(styles.buttonDeleteFromCartContainer)}>
+                <Button onClick={handleDeleteElement} disabled={isLoadingDeleteElementInCart}>
+                  Удалить
+                </Button>
+              </div>
             </>
           ) : (
-            <Button onClick={handleAddToCart} disabled={isLoadingCreatingElementInCart}>
-              Добавить в корзину
-            </Button>
+            <div>
+              <Button onClick={handleAddToCart} disabled={isLoadingCreatingElementInCart}>
+                Добавить в корзину
+              </Button>
+            </div>
           )}
         </div>
       </div>

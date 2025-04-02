@@ -1,43 +1,24 @@
-.redBg {
-  background-color: red;
+@use '../../styles/mixins';
+
+.mainContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  max-width: 1200px;
+
+  margin: 0 auto;
+  padding: 0 1rem;
+
+  @include mixins.media(tablet) {
+    padding: 0 1.4rem;
+  }
+
+  @include mixins.media(desktop) {
+    padding: 0 1.8rem;
+  }
 }
 
-.greenBg {
-  background-color: green;
-}
-
-.yellowdBg {
-  background-color: yellow;
-}
-
-.blueBg {
-  background-color: blue;
-}
-
-.orangeBg {
-  background-color: orange;
-}
-
-.purpleBg {
-  background-color: purple;
-}
-
-.pinkBg {
-  background-color: pink;
-}
-
-.cyanBg {
-  background-color: cyan;
-}
-
-.brownBg {
-  background-color: brown;
-}
-
-.grayBg {
-  background-color: gray;
-}
-
-.limeBg {
-  background-color: lime;
+.mainContainer > main {
+  flex: 1;
 }

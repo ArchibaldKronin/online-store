@@ -1,3 +1,2 @@
-export * from "./cart";
-export * from "./products";
-export * from "./common-types";
+export * from './cart';
+export * from './product';

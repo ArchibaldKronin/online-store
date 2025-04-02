@@ -1,11 +1,53 @@
-.redBg {
-  background-color: red;
+@use '../../styles/mixins';
+@use '../../styles/variables';
+
+header {
+  margin-bottom: 0.4rem;
+  // padding-left: 1rem;
+  padding-top: 1rem;
+
+  @include mixins.media(tablet) {
+    margin-bottom: 0.8rem;
+    // padding-left: 1.4rem;
+  }
+
+  @include mixins.media(desktop) {
+    margin-bottom: 1.2rem;
+    // padding-left: 1.8rem;
+    padding-top: 1.8rem;
+  }
 }
 
-.greenBg {
-  background-color: green;
+.container {
+  border-bottom: 1px solid variables.$text-color;
 }
 
-.yellowdBg {
-  background-color: yellow;
+header h1 {
+  margin-bottom: 1rem;
+}
+
+button {
+  width: 130px;
+}
+
+.nameContainer {
+  display: flex;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: space-between;
+
+  width: 300px;
+
+  padding-bottom: 0.3rem;
+
+  @include mixins.media(tablet) {
+    padding-bottom: 0.4rem;
+  }
+
+  @include mixins.media(desktop) {
+    padding-bottom: 0.6rem;
+    width: 350px;
+  }
 }

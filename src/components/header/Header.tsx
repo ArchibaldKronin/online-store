@@ -10,9 +10,16 @@ const Header = () => {
 
   return (
     <header>
-      <h1 className={classNames(styles.redBg)}>Online Store</h1>
-      <Button onClick={productsClickHandler}>Каталог</Button>
-      <Button onClick={cartClickHandler}>SVG_cart_icon</Button>
+      <div className={classNames(styles.container)}>
+        <div className={classNames(styles.nameContainer)}>
+          <div>{'ICON '}</div>
+          <h1>Peach Online Store</h1>
+        </div>
+        <div className={classNames(styles.buttonsContainer)}>
+          <Button onClick={productsClickHandler}>Каталог</Button>
+          <Button onClick={cartClickHandler}>Корзина</Button>
+        </div>
+      </div>
     </header>
   );
 };

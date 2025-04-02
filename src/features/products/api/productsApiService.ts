@@ -1,19 +1,7 @@
-import { SortSelectStates } from '../../../components/selectComponent/SelectSortComponent';
 import { BASE_URL_PRODUCTS } from '../../../constantst';
 import { Product } from '../../../types';
-import { matchSorter } from 'match-sorter';
 
-export const getProducts = async (
-  pageParams: string,
-  // query?: string,
-  // sort?: SortSelectStates,
-): Promise<Product[] | null> => {
-  // const url = new URL(`${BASE_URL_PRODUCTS}`);
-  // if (!query && !sort) {
-  //   url.searchParams.append('page', page);
-  //   url.searchParams.append('limit', '10');
-  // }
-
+export const getProducts = async (pageParams: string): Promise<Product[] | null> => {
   const response = await fetch(`${BASE_URL_PRODUCTS}?${pageParams}`);
   if (!response.ok) {
     throw {

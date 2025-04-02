@@ -9,7 +9,6 @@ export interface SearchFormProps {
 }
 
 const SearchBar = memo(({ onSearch }: SearchFormProps) => {
-  // const [query, setQuery] = useState(getQParamsFromSession());
   const [query, setQuery] = useState(getStringFromSession('q'));
   const debouncedOnSearch = useDebounceCallback(onSearch, 500);
 
@@ -25,7 +24,7 @@ const SearchBar = memo(({ onSearch }: SearchFormProps) => {
   };
 
   return (
-    <div className={classNames(styles.blueBg)}>
+    <div className={classNames(styles.searchContainer)}>
       <form role="search" onSubmit={handleSubmit}>
         <input
           type="search"

@@ -1,12 +1,24 @@
+// Экраны
+$tablet: 768px;
+$desktop: 1024px;
+
 // Цвета
-$primary-color: #007bff;
-$secondary-color: #6c757d;
-$background-color: #f8f9fa;
+$primary-color: #ffab73;
+$secondary-color: #ffc273;
+$accent-color: #ff9173;
+
+$background-color: #fce996;
+$surface-color: #ffe4c2;
+
 $text-color: #212529;
+$text-muted-color: rgba(33, 37, 41, 0.6);
+
+// $success-color:        #28a745;
+// $error-color:          #dc3545;
 
 // Шрифты
 $font-primary: 'Roboto', sans-serif;
-$font-size-base: 16px;
+$base-font-size: 1.4rem;
 
 // Отступы
 $spacing-small: 8px;

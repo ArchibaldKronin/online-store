@@ -3,13 +3,32 @@
 @use 'variables';
 @use 'reset';
 @use 'mixins';
+@use 'typography';
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+}
 
 body {
   font-family: variables.$font-primary;
-  font-size: variables.$font-size-base;
+  font-size: variables.$base-font-size;
   background-color: variables.$background-color;
   color: variables.$text-color;
   line-height: 1.6;
+
+  @include mixins.media(tablet) {
+    font-size: 1.5rem;
+  }
+
+  @include mixins.media(desktop) {
+    font-size: 1.6rem;
+  }
 }
 
 h1,
@@ -21,26 +40,91 @@ h6 {
   font-weight: bold;
 }
 
-button {
-  background-color: variables.$primary-color;
+button,
+input,
+select {
   color: variables.$text-color;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  box-shadow:
+    0 0px 2px hsla(0, 0%, 100%, 0.6),
+    0 1px 4px hsla(0, 0%, 0%, 0.2);
+  @include mixins.border-radius();
 
-  &:hover {
-    background-color: color.adjust(variables.$primary-color, $lightness: -10%, $space: hsl);
+  @include mixins.media(tablet) {
+    padding: 0.6rem 0.8rem;
+  }
+
+  @include mixins.media(desktop) {
+    padding: 0.8rem 1rem;
+  }
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0px 2px hsla(0, 0%, 0%, 0.2),
+      0 2px 4px hsla(0, 0%, 0%, 0.2);
+  }
+
+  &:active {
+    outline: none;
+    box-shadow: 0 0px 2px hsla(0, 0%, 0%, 0.4);
+    transform: translateY(2px);
   }
 
   &:disabled {
-    background: gray;
     cursor: not-allowed;
     opacity: 0.6;
   }
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 15px;
+button {
+  background-color: variables.$primary-color;
+  border: none;
+
+  &:hover {
+    // background-color: variables.$accent-color;
+  }
+
+  &:active {
+    background-color: variables.$accent-color;
+  }
+
+  &:disabled {
+    background: variables.$text-muted-color;
+  }
+}
+
+input {
+  background-color: variables.$surface-color;
+  border: none;
+
+  &:hover {
+    // background-color: variables.$accent-color;
+  }
+
+  &:active {
+    // background-color: variables.$accent-color;
+  }
+
+  &:disabled {
+    background: variables.$text-muted-color;
+  }
+}
+
+select {
+  background-color: variables.$surface-color;
+  border: none;
+
+  &:hover {
+    // background-color: variables.$accent-color;
+  }
+
+  &:active {
+    // background-color: variables.$accent-color;
+  }
+
+  &:disabled {
+    background: variables.$text-muted-color;
+  }
 }

@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import ErrorPage from '../../../../components/error-page/ErrorPage';
 import Loader from '../../../../components/loader/Loader';
 import { useGetProductsQuery } from '../../api/productsApi';
-
 import useCustomSearchParam from '../../../../hooks/useCustomSearchParam';
 import ProductListComponent from '../../../../components/product-list-component/ProductListComponent';
 import ProductListHeader from '../../../../components/productListHeader/ProductListHeader';
@@ -13,6 +12,8 @@ import {
 } from '../../../../functions/session-storage-functions/queryStorageFunctions';
 import useGetParamsFromStoreEffect from '../../../../hooks/useGetParamsFromStoreEffect';
 import Button from '../../../../components/button/Button';
+import classNames from 'classnames';
+import styles from './ProductListPage.module.scss';
 
 const ProductListPage = () => {
   const [memorableSearchParams, setMemorableSearchParams] = useCustomSearchParam([
@@ -30,7 +31,7 @@ const ProductListPage = () => {
   //Получение параметра для сортировки
   const sortSearchParamObj = memorableSearchParams.find((param) => 'sort' in param);
   const sortSearchParam = (sortSearchParamObj?.['sort'] ?? '') as SortSelectStates;
-  //запрос
+
   const {
     data: products,
     error,
@@ -47,12 +48,10 @@ const ProductListPage = () => {
     setMemorableSearchParams(paramsObjArr);
   };
 
-  //каждый раз при монтировании, проверять хранилище
   useGetParamsFromStoreEffect(['q', 'sort', 'page'], setMemorableSearchParams);
 
   const [currentPage, setCurrentPage] = useState(Number(pageSearchParam));
 
-  //пропсы
   const handleSearch = useCallback(
     (query: string) => {
       const newParams = memorableSearchParams.map((obj) => {
@@ -117,25 +116,25 @@ const ProductListPage = () => {
     return <ErrorPage er={error} />;
   }
   return (
-    <div>
+    <div className={classNames(styles.container)}>
       <ProductListHeader onSearch={handleSearch} onChangeSelect={handleChangeSelect} />
-      {/* Текущая сортировка: {curentSorting} */}
       <ul>
         {products &&
           products.map((product) => (
             <li key={product.id}>
-              {/* Исправь переделай и количество в корзине, и факт наличия */}
               <ProductListComponent {...product} />
             </li>
           ))}
       </ul>
-      <Button onClick={handlePrevClick} disabled={currentPage <= 1}>
-        Предыдущая страница
-      </Button>
-      {currentPage}
-      <Button onClick={handleNextClick} disabled={!checkIsNextButtonActive()}>
-        Следующая страница
-      </Button>
+      <div className={classNames(styles.buttonsContainer)}>
+        <Button onClick={handlePrevClick} disabled={currentPage <= 1}>
+          Предыдущая страница
+        </Button>
+        <span>{currentPage}</span>
+        <Button onClick={handleNextClick} disabled={!checkIsNextButtonActive()}>
+          Следующая страница
+        </Button>
+      </div>
     </div>
   );
 };

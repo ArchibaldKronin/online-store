@@ -6,13 +6,17 @@
   justify-content: center;
 }
 
-@mixin box-shadow($x: 0, $y: 4px, $blur: 10px, $color: rgba(0, 0, 0, 0.2)) {
-  box-shadow: $x $y $blur $color;
-}
+// @mixin box-shadow($x: 0, $y: 4px, $blur: 10px, $color: rgba(0, 0, 0, 0.2)) {
+//   box-shadow: $x $y $blur $color;
+// }
 
-@mixin border-radius($radius: 5px) {
+@mixin border-radius($radius: 4px) {
   border-radius: $radius;
   overflow: hidden;
+}
+
+@mixin flex-shrink-fix {
+  min-width: 0;
 }
 
 @mixin text-ellipsis($lines: 1) {
@@ -32,20 +36,19 @@
   font-weight: bold;
 }
 
-// @mixin media($size) {
-//   @if $size == mobile {
-//     @media (max-width: 600px) { @content; }
-//   } @else if $size == tablet {
-//     @media (max-width: 1024px) { @content; }
-//   } @else if $size == desktop {
-//     @media (min-width: 1025px) { @content; }
-//   }
-// }
+@mixin heading($multiplier) {
+  font-size: calc(1em * $multiplier);
+  margin-bottom: calc(1rem * $multiplier);
+}
 
-// .box {
-//   width: 100%;
-
-//   @include media(mobile) {
-//     width: 90%;
-//   }
-// }
+@mixin media($point) {
+  @if $point == tablet {
+    @media (min-width: variables.$tablet) {
+      @content;
+    }
+  } @else if $point == desktop {
+    @media (min-width: variables.$desktop) {
+      @content;
+    }
+  }
+}

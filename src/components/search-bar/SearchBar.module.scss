@@ -1,43 +1,30 @@
-.redBg {
-  background-color: red;
+@use '../../styles/mixins';
+@use '../../styles/variables';
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+
+  margin-bottom: 0.4rem;
+
+  @include mixins.media(tablet) {
+    margin-bottom: 0;
+  }
+
+  @include mixins.media(desktop) {
+    margin-bottom: 0;
+  }
 }
 
-.greenBg {
-  background-color: green;
-}
+.searchContainer input {
+  width: 300px;
 
-.yellowdBg {
-  background-color: yellow;
-}
+  &::placeholder {
+    color: variables.$text-muted-color;
+    opacity: 1;
+  }
 
-.blueBg {
-  background-color: blue;
-}
-
-.orangeBg {
-  background-color: orange;
-}
-
-.purpleBg {
-  background-color: purple;
-}
-
-.pinkBg {
-  background-color: pink;
-}
-
-.cyanBg {
-  background-color: cyan;
-}
-
-.brownBg {
-  background-color: brown;
-}
-
-.grayBg {
-  background-color: gray;
-}
-
-.limeBg {
-  background-color: lime;
+  &:focus::placeholder {
+    color: transparent;
+  }
 }

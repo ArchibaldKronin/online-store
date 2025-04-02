@@ -6,7 +6,6 @@ import ErrorPage from '../error-page/ErrorPage';
 import classNames from 'classnames';
 import styles from './CartElementComponent.module.scss';
 import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
-import { useChangeCartElementQuantityMutation } from '../../features/cart/api/cartApi';
 import { CartElement } from '../../types';
 import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
@@ -34,7 +33,6 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
     error: errorGetProducts,
     isLoading: isLoadingProduct,
   } = useGetProductByIdQuery(String(productId));
-  //ВСЕ ДЕЙСТВИЯ С КОРЗИНОЙ
   const {
     changeCartElementQuantityMutation: [
       changeQuantityInCart,

@@ -2,9 +2,6 @@ import {
   useChangeCartElementQuantityMutation,
   useCreateElementInCartMutation,
   useDeleteCartElementMutation,
-  useGetCartElementByProductIdQuery,
-  useGetCartQuery,
-  useLazyGetCartElementByProductIdQuery,
 } from '../features/cart/api/cartApi';
 
 export default function useCartElementMutationsApi() {
