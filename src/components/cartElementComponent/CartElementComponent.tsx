@@ -113,16 +113,19 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
   if (isLoadingProduct) return <div>Loading...</div>;
   if (!product) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
   return (
-    <div>
-      <div className={classNames(styles.imgContainer)}>
-        <img src={product.image} alt={`Image of the ${product.title}`} />
-      </div>
+    <div className={classNames(styles.container)}>
       <div className={classNames(styles.mainInfoContainer)}>
-        <h3>{product.title}</h3>
-        <p className={classNames(styles.description)}>{product.description}</p>
-        <div className={classNames(styles.price)}>{product.price} у.е.</div>
+        <div className={classNames(styles.imgContainer)}>
+          <img src={product.image} alt={`Image of the ${product.title}`} />
+        </div>
+        <div className={classNames(styles.textInfoContainer)}>
+          <h3 className={classNames(styles.title)}>{product.title}</h3>
+          <p className={classNames(styles.category)}>Категория: {product.category}</p>
+          <p className={classNames(styles.description)}>{product.description}</p>
+          <p className={classNames(styles.price)}>{product.price} у.е.</p>
+        </div>
       </div>
-      <div>
+      <div className={classNames(styles.manualsContainer)}>
         <СhangeQuantityItem
           isLoading={isLoadingChangeQuantityInCart || isLoadingDeleteElementInCart}
           onClickMinus={handlDecrQuantity}
@@ -132,12 +135,14 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
         >
           {quantityState}
         </СhangeQuantityItem>
-        <Button onClick={handleDeleteElement} disabled={isLoadingChangeQuantityInCart}>
-          Удалить из корзины
-        </Button>
-      </div>
-      <div>
-        <Button onClick={handleToProductClick}>К товару</Button>
+        <div className={classNames(styles.buttonDeleteFromCartContainer)}>
+          <Button onClick={handleDeleteElement} disabled={isLoadingChangeQuantityInCart}>
+            Удалить
+          </Button>
+        </div>
+        <div className={classNames(styles.buttonGoroProductContainer)}>
+          <Button onClick={handleToProductClick}>К товару</Button>
+        </div>
       </div>
     </div>
   );

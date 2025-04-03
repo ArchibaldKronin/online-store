@@ -1,0 +1,109 @@
+@use '../../../styles/mixins';
+@use '../../../styles/variables';
+
+.container {
+}
+
+.elementsContainer {
+  border-bottom: 1px solid variables.$text-color;
+
+  padding-bottom: 0.8rem;
+
+  @include mixins.media(tablet) {
+    padding-bottom: 1.2rem;
+  }
+
+  @include mixins.media(desktop) {
+    padding-bottom: 1.8rem;
+  }
+}
+
+.elementsContainer ul {
+  @include mixins.media(tablet) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-content: center;
+
+    justify-items: center;
+    align-items: center;
+
+    gap: 0.8rem;
+  }
+
+  @include mixins.media(desktop) {
+    gap: 1.2rem;
+  }
+}
+
+.elementsContainer li {
+  position: relative;
+  margin-bottom: 0.4rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 0.5rem;
+    background-color: variables.$secondary-color;
+    border-radius: 0.5rem;
+  }
+
+  &:last-child::after {
+    content: none;
+  }
+
+  @include mixins.media(tablet) {
+    margin-bottom: 0;
+    display: grid;
+    &:last-child::after {
+      content: '';
+    }
+  }
+
+  @include mixins.media(desktop) {
+    margin-bottom: 0;
+  }
+}
+
+.billContainer {
+  padding: 0.8rem 0;
+
+  @include mixins.media(tablet) {
+    padding: 1.2rem 0;
+  }
+
+  @include mixins.media(desktop) {
+    padding: 1.8rem 0;
+  }
+}
+
+.billContainer span {
+  font-weight: bold;
+}
+
+.manualsContainer {
+  display: flex;
+  justify-content: space-between;
+
+  width: 300px;
+
+  @include mixins.media(desktop) {
+    width: 350px;
+  }
+}
+
+.manualsContainer button {
+  background-color: variables.$secondary-color;
+  width: 13rem;
+}
+
+.clearCartContainer button {
+  background-color: rgb(253, 102, 75);
+}

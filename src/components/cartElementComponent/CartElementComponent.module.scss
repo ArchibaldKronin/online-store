@@ -1,94 +1,110 @@
 @use '../../styles/mixins';
+@use '../../styles/variables';
 
-.productComponentContainer {
+.container {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
 
-  height: 200px;
+  background-color: variables.$surface-color;
+  height: 26rem;
+  padding: 0.5rem 0.5rem;
+
+  box-shadow:
+    0 0px 2px hsla(0, 0%, 100%, 0.6),
+    0 1px 4px hsla(0, 0%, 0%, 0.2);
+  @include mixins.border-radius();
+
+  &:hover,
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0px 2px hsla(0, 0%, 0%, 0.2),
+      0 2px 4px hsla(0, 0%, 0%, 0.2);
+  }
+
+  @include mixins.media(tablet) {
+    height: 27rem;
+  }
+
+  @include mixins.media(desktop) {
+    height: 28rem;
+  }
 }
-.productMainInfoContainer {
+.mainInfoContainer {
   display: flex;
+  gap: 1rem;
 }
 
 .imgContainer {
-  width: 200px;
-  height: 200px;
-}
+  width: 18rem;
+  height: 18rem;
+  flex-shrink: 0;
 
-@media (max-width: 600px) {
-  .imgContainer {
-    width: 50px;
-    height: 50px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .imgContainer {
-    width: 140px;
-    height: 140px;
-  }
+  @include mixins.border-radius();
 }
 
 .imgContainer img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
-.smallProductImage {
+.textInfoContainer {
+  height: 18rem;
+
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+
+  @include mixins.flex-shrink-fix;
+}
+
+.title {
+  height: 2.6rem;
+  @include mixins.text-ellipsis;
 }
 
 .category {
-  @include mixins.bold;
+  height: 2.4rem;
+  color: variables.$text-muted-color;
+  @include mixins.text-ellipsis;
 }
 
 .description {
+  height: 4.5rem;
   @include mixins.text-ellipsis(2);
 }
 
 .price {
-  @include mixins.bold;
+  height: 2.3rem;
+  font-weight: bold;
+  margin: 0;
 }
 
-.redBg {
-  background-color: red;
+.manualsContainer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  width: 300px;
+  padding-bottom: 0.7rem;
+
+  @include mixins.media(desktop) {
+    width: 350px;
+  }
 }
 
-.greenBg {
-  background-color: green;
+.manualsContainer button {
+  background-color: variables.$secondary-color;
+  width: 13rem;
 }
 
-.yellowdBg {
-  background-color: yellow;
+.buttonDeleteFromCartContainer button {
+  background-color: rgb(253, 102, 75);
 }
 
-.blueBg {
-  background-color: blue;
-}
-
-.orangeBg {
-  background-color: orange;
-}
-
-.purpleBg {
-  background-color: purple;
-}
-
-.pinkBg {
-  background-color: pink;
-}
-
-.cyanBg {
-  background-color: cyan;
-}
-
-.brownBg {
-  background-color: brown;
-}
-
-.grayBg {
-  background-color: gray;
-}
-
-.limeBg {
-  background-color: lime;
-}
+// .buttonGoroProductContainer {
+// }

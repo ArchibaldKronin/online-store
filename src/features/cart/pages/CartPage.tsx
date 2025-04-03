@@ -8,6 +8,8 @@ import CartElementComponent, {
 import { useMemo, useState } from 'react';
 import Button from '../../../components/button/Button';
 import { useChangeProductStockMutation } from '../../products/api/productsApi';
+import classNames from 'classnames';
+import styles from './CartPage.module.scss';
 
 const CartPage = () => {
   const {
@@ -102,10 +104,21 @@ const CartPage = () => {
   if (isLoading) return <Loader />;
   // if (error) return <ErrorPage er={error as FetchBaseQueryError} />;
   return (
-    <div>
+    <div className={classNames(styles.container)}>
       <h3>Корзина</h3>
-      <div>
-        <ul>
+      <div className={classNames(styles.elementsContainer)}>
+        {cart.length !== 0 ? (
+          <ul>
+            {props.map((elem) => (
+              <li key={elem.id}>
+                <CartElementComponent {...elem} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          'Ваша корзина пуста'
+        )}
+        {/* <ul>
           {cart.length !== 0
             ? props.map((elem) => (
                 <li key={elem.id}>
@@ -113,24 +126,32 @@ const CartPage = () => {
                 </li>
               ))
             : 'Корзина пуста'}
-        </ul>
+        </ul> */}
       </div>
-      <div>Всего к оплате: {billMemo} у.е.</div>
-      <div>
-        <Button
-          onClick={handleBuyCart}
-          disabled={cart.length < 1 || isLoadingDeleteElementInCart || isChangeProductStockLoading}
-        >
-          Купить
-        </Button>
+      <div className={classNames(styles.billContainer)}>
+        Всего к оплате: <span>{billMemo}</span> у.е.
       </div>
-      <div>
-        <Button
-          onClick={handleClearCart}
-          disabled={cart.length < 1 || isLoadingDeleteElementInCart || isChangeProductStockLoading}
-        >
-          Очистить корзину
-        </Button>
+      <div className={classNames(styles.manualsContainer)}>
+        <div>
+          <Button
+            onClick={handleBuyCart}
+            disabled={
+              cart.length < 1 || isLoadingDeleteElementInCart || isChangeProductStockLoading
+            }
+          >
+            Купить
+          </Button>
+        </div>
+        <div className={classNames(styles.clearCartContainer)}>
+          <Button
+            onClick={handleClearCart}
+            disabled={
+              cart.length < 1 || isLoadingDeleteElementInCart || isChangeProductStockLoading
+            }
+          >
+            Очистить корзину
+          </Button>
+        </div>
       </div>
     </div>
   );
