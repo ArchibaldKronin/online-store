@@ -99,7 +99,7 @@ SPA приложение онлайн-магазина, реализованно
 
 ### Мобильная версия
 
-![Мобильная версия каталога](./src/assets/screenshots/mobile-catalog.png)
+![Мобильная версия каталога](./public/screenshots/mobile-catalog.png)
 
 ---
 
