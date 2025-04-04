@@ -1,0 +1,56 @@
+-4) Можно добавить клик по категории в карточке товара и на странице товара
+В карточке при клике на категорию можно делать e.prevantDefault, делать запрос на сервер по товарам конкретной категории
+Тогда еще нужно будет конкретную категорию хранить. И как-то сбрасывать. А как? 
+Это лишнее, я думаю
+7) для индикации загрузки в аутлет и не только использовать useNavigation (загрузка, переход итд)
+    navigation.state → "idle", "loading", "submitting"
+    navigation.location → объект Location, если идет переход
+    navigation.formMethod → метод отправки формы (POST, PUT, DELETE и т. д.)
+8) useLocation - данные о текущем url (можно принять стейт из useNavigate)
+    pathname → /products/123
+    search → ?q=apple
+    hash → #section
+    state → переданные данные (например, при navigate("/path", { state: data }))
+9) useNavigate для программной навигации (можно передать стейт для useLocation)
+(Используется в обработчике событий, когда пользователь что-то делает)
+    navigate("/path") → перейти на /path
+    navigate(-1) → вернуться назад
+    navigate("/profile", { replace: true }) → заменить текущий URL (без записи в history)
+    navigate("/product", { state: { id: 123 } }) → передать state в useLocation().state
+10) <Navigate> - компонент для навигации, аналог useNavigate (выполняется при рендере JSX)
+    <Navigate> выполняет переход сразу при рендере.
+    useNavigate() используется в обработчиках событий.
+11) URLSearchParams
+    {
+        const location = useLocation();
+        const params = new URLSearchParams(location.search);
+
+        console.log(params.get("q"));
+        console.log(params.get("page")); 
+    }
+    {
+        const navigate = useNavigate();
+
+    }
+12) useSearchParams позволяет получать query-параметры URL 
+13) useNavigation() пассивно сообщает, что в данный момент происходит переход по маршруту.
+        const navigation = useNavigation();
+        console.log(navigation.state); // 'idle' | 'loading' | 'submitting'
+23) Чтоб загружались до конца картинки попробуй какой-то атрибут чето типа <img loading="lazy"
+Есть файл "общие типы"
+31) Заглушки для картинок
+32) Написать стейт для хранения в нем всех ошибок?
+
+$primary-color	#FFAB73	Основные кнопки, активные элементы, ссылки
+$secondary-color	#FFC273	Второстепенные кнопки, баджи, иконки
+$accent-color	#FF9173	Hover, активные состояния
+$background-color	#FFE573	Фон страницы (но лучше сделать светлее)
+$surface-color	#FFE4C2	Фоны карточек, модалок, блоков
+$text-color	#212529	Основной текст
+$text-muted-color	rgba(...)	Подписи, плейсхолдеры, неактивный текст
+$warning-color Ошибки и так далее
+
+(пробел)	Любой вложенный потомок	.parent input {} — любой input внутри
+>	Только прямой потомок	.parent > input {} — только если input сразу внутри
++	Соседний элемент (сразу после)	.input + button {} — button сразу после input
+~	Любой последующий сосед	.input ~ button {} — все button, идущие после input
