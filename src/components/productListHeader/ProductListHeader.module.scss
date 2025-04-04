@@ -5,20 +5,13 @@
   display: flex;
   flex-direction: column;
 
-  // background-color: red;
   border-bottom: 1px solid variables.$text-color;
-
-  // margin-bottom: 0.4rem;
-  // padding-left: 1rem;
   padding-bottom: 0.7rem;
 
   @include mixins.media(tablet) {
     flex-direction: row-reverse;
     justify-content: space-between;
-    // background-color: yellow;
 
-    // margin-bottom: 0.8rem;
-    // padding-left: 1.4rem;
     padding-bottom: 1.2rem;
   }
 
@@ -26,8 +19,6 @@
     flex-direction: row-reverse;
     justify-content: space-between;
 
-    // margin-bottom: 1.2rem;
-    // padding-left: 1.8rem;
     padding-bottom: 1.8rem;
   }
 }

@@ -83,10 +83,6 @@ button {
   background-color: variables.$primary-color;
   border: none;
 
-  &:hover {
-    // background-color: variables.$accent-color;
-  }
-
   &:active {
     background-color: variables.$accent-color;
   }
@@ -100,14 +96,6 @@ input {
   background-color: variables.$surface-color;
   border: none;
 
-  &:hover {
-    // background-color: variables.$accent-color;
-  }
-
-  &:active {
-    // background-color: variables.$accent-color;
-  }
-
   &:disabled {
     background: variables.$text-muted-color;
   }
@@ -116,14 +104,6 @@ input {
 select {
   background-color: variables.$surface-color;
   border: none;
-
-  &:hover {
-    // background-color: variables.$accent-color;
-  }
-
-  &:active {
-    // background-color: variables.$accent-color;
-  }
 
   &:disabled {
     background: variables.$text-muted-color;

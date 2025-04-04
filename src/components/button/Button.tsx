@@ -1,6 +1,4 @@
 import { FC, ReactNode } from 'react';
-import styles from './Button.module.scss';
-import classNames from 'classnames';
 
 type ButtonProps = {
   children: ReactNode;
@@ -10,11 +8,7 @@ type ButtonProps = {
 
 const Button: FC<ButtonProps> = ({ children, onClick, disabled = false }) => {
   return (
-    <button
-      onClick={onClick}
-      disabled={disabled}
-      // className={classNames(styles.greenBg)}
-    >
+    <button onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

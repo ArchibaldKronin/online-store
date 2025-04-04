@@ -3,7 +3,6 @@ import styles from './SearchBar.module.scss';
 import React, { memo, useState } from 'react';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
 import { getStringFromSession } from '../../functions/session-storage-functions/queryStorageFunctions';
-
 export interface SearchFormProps {
   onSearch: (query: string) => void;
 }

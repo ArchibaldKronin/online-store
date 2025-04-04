@@ -6,10 +6,6 @@
   justify-content: center;
 }
 
-// @mixin box-shadow($x: 0, $y: 4px, $blur: 10px, $color: rgba(0, 0, 0, 0.2)) {
-//   box-shadow: $x $y $blur $color;
-// }
-
 @mixin border-radius($radius: 4px) {
   border-radius: $radius;
   overflow: hidden;
@@ -30,10 +26,6 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-}
-
-@mixin bold {
-  font-weight: bold;
 }
 
 @mixin heading($multiplier) {

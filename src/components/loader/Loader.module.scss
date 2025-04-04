@@ -1,43 +1,33 @@
-.redBg {
-  background-color: red;
+@use '../../styles/mixins';
+@use '../../styles/variables';
+
+.container {
+  width: 30rem;
+  height: 30rem;
+  margin: 5rem auto;
+  background-image: url('/src/assets/icons/loading.svg');
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: spin 3s infinite linear;
+
+  @include mixins.media(tablet) {
+    margin: 2rem 0;
+    width: 15rem;
+    height: 15rem;
+  }
+
+  @include mixins.media(desktop) {
+    width: 30rem;
+    height: 30rem;
+  }
 }
 
-.greenBg {
-  background-color: green;
-}
-
-.yellowdBg {
-  background-color: yellow;
-}
-
-.blueBg {
-  background-color: blue;
-}
-
-.orangeBg {
-  background-color: orange;
-}
-
-.purpleBg {
-  background-color: purple;
-}
-
-.pinkBg {
-  background-color: pink;
-}
-
-.cyanBg {
-  background-color: cyan;
-}
-
-.brownBg {
-  background-color: brown;
-}
-
-.grayBg {
-  background-color: gray;
-}
-
-.limeBg {
-  background-color: lime;
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

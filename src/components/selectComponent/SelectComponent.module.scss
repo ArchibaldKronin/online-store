@@ -11,17 +11,6 @@
   @include mixins.media(desktop) {
     width: 350px;
   }
-  // background-color: green;
-
-  // margin-bottom: 0.4rem;
-
-  // @include mixins.media(tablet) {
-  //   margin-bottom: 0.8rem;
-  // }
-
-  // @include mixins.media(desktop) {
-  //   margin-bottom: 1.2rem;
-  // }
 }
 
 label {

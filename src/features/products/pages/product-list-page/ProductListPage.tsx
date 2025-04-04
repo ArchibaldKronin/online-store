@@ -14,6 +14,7 @@ import useGetParamsFromStoreEffect from '../../../../hooks/useGetParamsFromStore
 import Button from '../../../../components/button/Button';
 import classNames from 'classnames';
 import styles from './ProductListPage.module.scss';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 const ProductListPage = () => {
   const [memorableSearchParams, setMemorableSearchParams] = useCustomSearchParam([
@@ -113,7 +114,7 @@ const ProductListPage = () => {
     return <Loader />;
   }
   if (error) {
-    return <ErrorPage er={error} />;
+    return <ErrorPage er={error as FetchBaseQueryError} />;
   }
   return (
     <div className={classNames(styles.container)}>

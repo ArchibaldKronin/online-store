@@ -90,6 +90,9 @@ const CartPage = () => {
     });
   };
 
+  if (isLoading) return <Loader />;
+  if (error) return <ErrorPage er={error as FetchBaseQueryError} />;
+
   if (!cart) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
 
   const props: CartElementComponentProps[] = cart?.map((cartItem) => ({
@@ -101,8 +104,6 @@ const CartPage = () => {
     getProductStockCallback: getProductStockState,
   }));
 
-  if (isLoading) return <Loader />;
-  // if (error) return <ErrorPage er={error as FetchBaseQueryError} />;
   return (
     <div className={classNames(styles.container)}>
       <h3>Корзина</h3>
@@ -118,15 +119,6 @@ const CartPage = () => {
         ) : (
           'Ваша корзина пуста'
         )}
-        {/* <ul>
-          {cart.length !== 0
-            ? props.map((elem) => (
-                <li key={elem.id}>
-                  <CartElementComponent {...elem} />
-                </li>
-              ))
-            : 'Корзина пуста'}
-        </ul> */}
       </div>
       <div className={classNames(styles.billContainer)}>
         Всего к оплате: <span>{billMemo}</span> у.е.

@@ -2,6 +2,9 @@ import { SerializedError } from '@reduxjs/toolkit';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { FC } from 'react';
 import { isRouteErrorResponse, useRouteError } from 'react-router-dom';
+import errorImage from '../../assets/images/error.png';
+import styles from './ErrorPage.module.scss';
+import classNames from 'classnames';
 
 type ErrorPageProps = {
   er: FetchBaseQueryError | Error | SerializedError | string;
@@ -54,12 +57,17 @@ const ErrorPage: FC<ErrorPageProps> = ({ er }) => {
   }
 
   return (
-    <div className="container">
-      <h1>Whoooops Something Goes Wrong</h1>
-      <h2>{errorObject.errorName}</h2>
-      {errorObject.errorStatus && <h3>{errorObject.errorStatus}</h3>}
-      {errorObject.statusText && <p>{errorObject.statusText}</p>}
-      {errorObject.errorMessage && <p>{errorObject.errorMessage}</p>}
+    <div className={classNames(styles.container)}>
+      <div className={classNames(styles.textContainer)}>
+        <h2>Whoooops Something Goes Wrong</h2>
+        <h3>{errorObject.errorName}</h3>
+        {errorObject.errorStatus && <h4>{errorObject.errorStatus}</h4>}
+        {errorObject.statusText && <p>{errorObject.statusText}</p>}
+        {errorObject.errorMessage && <p>{errorObject.errorMessage}</p>}
+      </div>
+      <div className={classNames(styles.imageContainer)}>
+        <img src={errorImage} alt="Грустный Персик" />
+      </div>
     </div>
   );
 };

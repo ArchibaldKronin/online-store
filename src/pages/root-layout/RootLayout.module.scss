@@ -8,14 +8,14 @@
   max-width: 1200px;
 
   margin: 0 auto;
-  padding: 1rem 0;
+  padding: 1rem 0.5rem;
 
   @include mixins.media(tablet) {
-    padding: 1.4rem 0;
+    padding: 1.4rem 0.5rem;
   }
 
   @include mixins.media(desktop) {
-    padding: 1.8rem 0;
+    padding: 1.8rem 0.5rem;
   }
 }
 

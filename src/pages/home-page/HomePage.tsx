@@ -1,5 +1,7 @@
+import { Navigate } from 'react-router-dom';
+
 const HomePage = () => {
-  return <h3>Home Page</h3>;
+  return <Navigate to={'/products'} replace />;
 };
 
 export default HomePage;

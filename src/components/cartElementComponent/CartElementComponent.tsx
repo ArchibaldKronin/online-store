@@ -1,7 +1,6 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { useGetProductByIdQuery } from '../../features/products/api/productsApi';
 import Button from '../button/Button';
-import { useNavigate } from 'react-router-dom';
 import ErrorPage from '../error-page/ErrorPage';
 import classNames from 'classnames';
 import styles from './CartElementComponent.module.scss';
@@ -9,6 +8,8 @@ import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
 import { CartElement } from '../../types';
 import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
+import { Link } from 'react-router-dom';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 export type CartElementComponentProps = CartElement & {
   onChangeCallback: () => void;
@@ -104,13 +105,10 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
     }
   };
 
-  const navigate = useNavigate();
-
-  const handleToProductClick = () => {
-    navigate(`/products/${productId}`);
-  };
-
   if (isLoadingProduct) return <div>Loading...</div>;
+
+  if (errorGetProducts) return <ErrorPage er={errorGetProducts as FetchBaseQueryError} />;
+
   if (!product) return <ErrorPage er={new Error('Не удалось получить данные о товаре')} />;
   return (
     <div className={classNames(styles.container)}>
@@ -141,7 +139,9 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
           </Button>
         </div>
         <div className={classNames(styles.buttonGoroProductContainer)}>
-          <Button onClick={handleToProductClick}>К товару</Button>
+          <Link to={`/products/${productId}`}>
+            <Button onClick={() => {}}>К товару</Button>
+          </Link>
         </div>
       </div>
     </div>

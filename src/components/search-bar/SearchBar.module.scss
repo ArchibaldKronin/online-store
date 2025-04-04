@@ -16,8 +16,18 @@
   }
 }
 
-.searchContainer input {
+.searchContainer form {
+  position: relative;
+}
+
+.searchContainer form input[type='search'] {
   width: 300px;
+  padding-left: 3rem;
+  background-image: url('/src/assets/icons/search.svg');
+  background-repeat: no-repeat;
+  background-position: 0.625rem 0.4rem;
+  background-size: 1.5rem;
+  position: relative;
 
   &::placeholder {
     color: variables.$text-muted-color;
@@ -26,5 +36,13 @@
 
   &:focus::placeholder {
     color: transparent;
+  }
+
+  @include mixins.media(tablet) {
+    background-position: 0.625rem 0.6rem;
+  }
+
+  @include mixins.media(desktop) {
+    background-position: 0.625rem 0.8rem;
   }
 }

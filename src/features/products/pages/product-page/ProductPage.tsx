@@ -135,11 +135,8 @@ const ProductPage = () => {
       <div className={classNames(styles.mainInfoContainer)}>
         <h3 className={classNames(styles.title)}>{product.title}</h3>
         <p className={classNames(styles.category)}>Категория: {product.category}</p>
-        {/* выдели жирным */}
         <p className={classNames(styles.description)}>{product.description}</p>
-        {/* описание пусть обрывается с многоточием */}
         <p className={classNames(styles.price)}>{product.price} у.е.</p>
-        {/* выдели жирным */}
         <div
           className={classNames(
             styles.manualsContainer,
