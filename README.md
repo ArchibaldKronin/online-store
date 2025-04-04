@@ -3,7 +3,7 @@
 ---
 
 SPA приложение онлайн-магазина, реализованное на принципах **Feature-Based Architecture** с использованием **React, TypeScript, Redux Toolkit (RTK Query), SCSS Modules**. Проект адаптирован под все типы экранов, оптимизирован для масштабирования.
-[Демо](https://archibaldkronin.github.io/online-store/)
+[Демо](https://peach-online-store.netlify.app/)
 
 ---
 
@@ -127,7 +127,7 @@ npm run dev
 
 ## Демо
 
-[Посмотреть демо](https://archibaldkronin.github.io/online-store/)
+[Посмотреть демо](https://peach-online-store.netlify.app/)
 
 ---
 
