@@ -28,12 +28,11 @@ const ProductPage = () => {
     isLoading: isLoadingProducts,
   } = useGetProductByIdQuery(productId);
 
-  const { data: elementInCart, isLoading: isLoadingGetElementInCart } =
-    useGetCartElementByProductIdQuery(String(product?.id), {
-      skip: !product?.id,
-      refetchOnMountOrArgChange: true,
-      refetchOnFocus: true,
-    });
+  const { data: elementInCart } = useGetCartElementByProductIdQuery(String(product?.id), {
+    skip: !product?.id,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
 
   const [triggerGetElementInCart] = useLazyGetCartElementByProductIdQuery();
 

@@ -3,7 +3,7 @@
 ---
 
 SPA приложение онлайн-магазина, реализованное на принципах **Feature-Based Architecture** с использованием **React, TypeScript, Redux Toolkit (RTK Query), SCSS Modules**. Проект адаптирован под все типы экранов, оптимизирован для масштабирования.
-[Демо](https://github.com/ArchibaldKronin/online-store)
+[Демо](https://archibaldkronin.github.io/online-store/)
 
 ---
 
@@ -87,15 +87,15 @@ SPA приложение онлайн-магазина, реализованно
 
 ### Каталог товаров
 
-![Каталог](./src/assets/screenshots/catalog.png)
+![Каталог](./public/screenshots/catalog.png)
 
 ### Страница товара
 
-![Товар](./src/assets/screenshots/product.png)
+![Товар](./public/screenshots/product.png)
 
 ### Корзина
 
-![Корзина](./src/assets/screenshots/cart.png)
+![Корзина](./public/screenshots/cart.png)
 
 ### Мобильная версия
 
@@ -127,7 +127,7 @@ npm run dev
 
 ## Демо
 
-[Посмотреть демо](https://github.com/ArchibaldKronin/online-store)
+[Посмотреть демо](https://archibaldkronin.github.io/online-store/)
 
 ---
 
