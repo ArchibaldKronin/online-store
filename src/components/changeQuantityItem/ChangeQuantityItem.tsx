@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import Button from '../button/Button';
 import classNames from 'classnames';
-import styles from './СhangeQuantityItem.module.scss';
+import styles from './ChangeQuantityItem.module.scss';
 
-const СhangeQuantityItem: FC<{
+const ChangeQuantityItem: FC<{
   children: number;
   onClickPlus: () => void;
   onClickMinus: () => void;
@@ -20,15 +20,23 @@ const СhangeQuantityItem: FC<{
 }) => {
   return (
     <div className={classNames(styles.container)}>
-      <Button onClick={onClickMinus} disabled={isLoading || disableMinusBtn}>
+      <Button
+        ariaLabel="Уменьшить количество в корзине"
+        onClick={onClickMinus}
+        disabled={isLoading || disableMinusBtn}
+      >
         -
       </Button>
       <span className={classNames(styles.quantity)}>{children}</span>
-      <Button onClick={onClickPlus} disabled={isLoading || disablePlusBtn}>
+      <Button
+        ariaLabel="Увеличить количество в корзине"
+        onClick={onClickPlus}
+        disabled={isLoading || disablePlusBtn}
+      >
         +
       </Button>
     </div>
   );
 };
 
-export default СhangeQuantityItem;
+export default ChangeQuantityItem;

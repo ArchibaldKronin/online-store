@@ -4,11 +4,12 @@ type ButtonProps = {
   children: ReactNode;
   onClick: () => void;
   disabled?: boolean;
+  ariaLabel?: string | undefined;
 };
 
-const Button: FC<ButtonProps> = ({ children, onClick, disabled = false }) => {
+const Button: FC<ButtonProps> = ({ children, onClick, disabled = false, ariaLabel }) => {
   return (
-    <button onClick={onClick} disabled={disabled}>
+    <button aria-label={ariaLabel} onClick={onClick} disabled={disabled}>
       {children}
     </button>
   );

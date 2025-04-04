@@ -48,6 +48,7 @@ const ProductListPage = () => {
 
     setMemorableSearchParams(paramsObjArr);
   };
+  const setSearchParamsAndStorCallback = useCallback(setSearchParamsAndStor, []);
 
   useGetParamsFromStoreEffect(['q', 'sort', 'page'], setMemorableSearchParams);
 
@@ -61,10 +62,10 @@ const ProductListPage = () => {
         }
         return { ...obj };
       });
-      setSearchParamsAndStor(newParams);
+      setSearchParamsAndStorCallback(newParams);
       setCurrentPage(1);
     },
-    [setSearchParamsAndStor],
+    [setSearchParamsAndStorCallback],
   );
 
   const handleChangeSelect = (query: SortSelectStates) => {
@@ -77,7 +78,7 @@ const ProductListPage = () => {
       }
       return { ...obj };
     });
-    setSearchParamsAndStor(newParams);
+    setSearchParamsAndStorCallback(newParams);
     setCurrentPage(1);
   };
 
@@ -90,7 +91,7 @@ const ProductListPage = () => {
         return { ...obj };
       }
     });
-    setSearchParamsAndStor(newParams);
+    setSearchParamsAndStorCallback(newParams);
   };
 
   const handleNextClick = () => {
@@ -102,7 +103,7 @@ const ProductListPage = () => {
         return { ...obj };
       }
     });
-    setSearchParamsAndStor(newParams);
+    setSearchParamsAndStorCallback(newParams);
   };
 
   const checkIsNextButtonActive = () => {

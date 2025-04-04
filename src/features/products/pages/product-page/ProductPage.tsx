@@ -6,7 +6,7 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import classNames from 'classnames';
 import styles from './ProductPage.module.scss';
 import { useEffect, useState } from 'react';
-import СhangeQuantityItem from '../../../../components/changeQuantityItem/СhangeQuantityItem';
+import ChangeQuantityItem from '../../../../components/changeQuantityItem/ChangeQuantityItem';
 import Button from '../../../../components/button/Button';
 import {
   useGetCartElementByProductIdQuery,
@@ -145,7 +145,7 @@ const ProductPage = () => {
         >
           {quantityInCartState > 0 ? (
             <>
-              <СhangeQuantityItem
+              <ChangeQuantityItem
                 onClickMinus={handlDecrQuantity}
                 onClickPlus={handlIncrQuantity}
                 isLoading={
@@ -157,7 +157,7 @@ const ProductPage = () => {
                 disableMinusBtn={quantityInCartState < 2}
               >
                 {quantityInCartState}
-              </СhangeQuantityItem>
+              </ChangeQuantityItem>
               <div className={classNames(styles.buttonDeleteFromCartContainer)}>
                 <Button onClick={handleDeleteElement} disabled={isLoadingDeleteElementInCart}>
                   Удалить

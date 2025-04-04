@@ -1,50 +1,134 @@
-# React + TypeScript + Vite
+# Online Store
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+SPA приложение онлайн-магазина, реализованное на принципах **Feature-Based Architecture** с использованием **React, TypeScript, Redux Toolkit (RTK Query), SCSS Modules**. Проект адаптирован под все типы экранов, оптимизирован для масштабирования.
+[Демо](https://github.com/ArchibaldKronin/online-store)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## Демо
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## Функциональность
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **Поиск** по товарам с debounce
+- **Сортировка** товаров
+- **Пагинация** с переключением страниц
+- **Корзина товаров** с управлением количеством и удалением
+- **Фильтрация URL-параметрами** (q, sort, page)
+- **Адаптивный дизайн** (mobile-first, под 768px и 1024px)
+
+---
+
+## Стек технологий
+
+- **React 18** + **React Router 6**
+- **TypeScript**
+- **Redux Toolkit** + **RTK Query**
+- **SCSS Modules** + **@use, переменные, миксины**
+- **Vite** — сборка проекта
+- **ESLint** — анализ кода
+
+---
+
+## Архитектура
+
+- **Feature-Based Architecture**
+  - `/features/products` — каталог, карточка товара
+  - `/features/cart` — корзина товаров
+- **Переиспользуемые компоненты** — в `/components`
+- **Хуки и функции** — изолированы в `/hooks` и `/functions`
+- **Стили**:
+  - глобальные (`_reset.scss`, `_variables.scss`, `_mixins.scss`, `_typography.scss`, `global.scss`)
+  - модульные (`*.module.scss` для каждого компонента)
+- **Типы данных** — в `/types`
+
+---
+
+## Адаптив и стилизация
+
+- **Mobile-first подход**
+- **Медиазапросы** через миксин `@include media(tablet|desktop)`
+- Использование `rem` для масштабируемых размеров
+- **Гибкая типографика**
+- Миксины для `ellipsis`, `flex-center`, `border-radius`
+
+---
+
+## API
+
+Проект использует **MockAPI** (https://mockapi.io/) в качестве имитации серверной части.
+Все данные (товары, корзина) получаются через HTTP-запросы к публичному REST API, созданному на платформе mockAPI.io.
+Работа с данными реализована через RTK Query.
+
+---
+
+## Преимущества
+
+- Чистая и читаемая архитектура
+- Модульность и масштабируемость
+- Настроенный ESLint, SCSS, переменные, миксины
+- Доступность (ARIA, фокус, клавиатура)
+- Реализация всего базового функционала e-commerce SPA
+
+---
+
+## Возможности для улучшения
+
+- Добавление UI-библиотеки (например, Radix)
+- Настройка темной темы
+- Тестирование компонентов (React Testing Library / Vitest)
+
+---
+
+## Скриншоты
+
+### Каталог товаров
+
+![Каталог](./src/assets/screenshots/catalog.png)
+
+### Страница товара
+
+![Товар](./src/assets/screenshots/product.png)
+
+### Корзина
+
+![Корзина](./src/assets/screenshots/cart.png)
+
+### Мобильная версия
+
+![Мобильная версия каталога](./src/assets/screenshots/mobile-catalog.png)
+
+---
+
+## Запуск проекта
+
+```bash
+npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+---
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Автор
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+**Иван Логинов** — Frontend-разработчик, специализация: React + TypeScript + SCSS. Этот проект — выпускная работа в рамках самостоятельного курса.
+
+---
+
+## Ссылки
+
+- [GitHub репозиторий](https://github.com/ArchibaldKronin/online-store)
+- [Профиль на GitHub](https://github.com/ArchibaldKronin)
+
+---
+
+## Демо
+
+[Посмотреть демо](https://github.com/ArchibaldKronin/online-store)
+
+---
+
+> _Проект призван продемонстрировать владение современными инструментами фронтенд-разработки, архитектурным мышлением, адаптивной версткой и технической аккуратностью._

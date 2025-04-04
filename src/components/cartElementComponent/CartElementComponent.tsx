@@ -4,7 +4,7 @@ import Button from '../button/Button';
 import ErrorPage from '../error-page/ErrorPage';
 import classNames from 'classnames';
 import styles from './CartElementComponent.module.scss';
-import СhangeQuantityItem from '../changeQuantityItem/СhangeQuantityItem';
+import ChangeQuantityItem from '../changeQuantityItem/ChangeQuantityItem';
 import { CartElement } from '../../types';
 import useCartElementMutationsApi from '../../hooks/useCartElementMutationsApi';
 import useDebounceCallback from '../../hooks/useDebounceCallback';
@@ -124,7 +124,7 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
         </div>
       </div>
       <div className={classNames(styles.manualsContainer)}>
-        <СhangeQuantityItem
+        <ChangeQuantityItem
           isLoading={isLoadingChangeQuantityInCart || isLoadingDeleteElementInCart}
           onClickMinus={handlDecrQuantity}
           onClickPlus={handlIncrQuantity}
@@ -132,9 +132,13 @@ const CartElementComponent: FC<{ children?: ReactNode } & CartElementComponentPr
           disablePlusBtn={isOverStockState}
         >
           {quantityState}
-        </СhangeQuantityItem>
+        </ChangeQuantityItem>
         <div className={classNames(styles.buttonDeleteFromCartContainer)}>
-          <Button onClick={handleDeleteElement} disabled={isLoadingChangeQuantityInCart}>
+          <Button
+            aria-label="Удалить"
+            onClick={handleDeleteElement}
+            disabled={isLoadingChangeQuantityInCart}
+          >
             Удалить
           </Button>
         </div>
